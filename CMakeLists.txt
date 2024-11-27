@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 # Project name and C standard version
-project(ed C)
+project(banca_de_codigo_uerj C)
 
 # Set C Standard
 set(CMAKE_C_STANDARD 89)
@@ -17,14 +17,11 @@ set(CMAKE_CXX_COMPILER /usr/bin/clang++)
 add_compile_options(
     -O3 -ggdb -g -pg -march=native -std=c89
     -Wall -Wextra -Werror -Wshadow -Wformat -Wreturn-type -Wuninitialized
-    -Wno-missing-braces -pedantic
+    -Wstrict-prototypes -Wno-missing-braces -pedantic
 )
 # Source files
 set(SOURCES src/main.c) 
 
 # Add the executable target
-add_executable(${PROJECT_NAME} ${SOURCES})
-
-# Link the necessary libraries
-target_link_libraries(${PROJECT_NAME} asan)
-
+include_directories(${CMAKE_SOURCE_DIR}/include)
+add_subdirectory(src)
