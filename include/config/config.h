@@ -19,11 +19,11 @@
 #define NULL ((void *)0)
 #endif
 
-/* Esse macro permite o uso de cores no terminal, colorizando todas as saidas
+/* Esse macro permite o uso de cores no terminal, colorizando todas as saidas.
  * 1 significa SIM, 0 significa NÃO; qualquer valor diferente pode ter 
  * comportamento inesperado */
-#ifndef _USE_COLOR
-#define _USE_COLOR 0
+#ifndef _USAR_COR_NO_TERMINAL
+#define _USAR_COR_NO_TERMINAL 1
 #endif
 
 /* Esse código é usado nas diretrizes de pré-processador para dinamicamente

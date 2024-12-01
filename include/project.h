@@ -5,6 +5,7 @@
 #define PROJECT_H
 
 #include <internal/cli.h>
+#include <internal/GUI/gui.h>
 #include <internal/menus.h>
 
 #endif /* PROJECT_H */

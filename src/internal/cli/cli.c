@@ -37,7 +37,7 @@ static const int win_colors[] = {
     FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE /* DARK_WHITE */
 };
 
-#if _USE_COLOR == 1
+#if _USAR_COR_NO_TERMINAL == 1
 void tc_set_color(cli_colors_t foreground, cli_colors_t background) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     int color_attr = 0;
@@ -78,7 +78,7 @@ void tc_reset_color() {
 /* Unix-like systems */
 #include <stdio.h>
 
-#if _USE_COLOR == 1
+#if _USAR_COR_NO_TERMINAL == 1
 void tc_set_color(cli_colors_t foreground, cli_colors_t background) {
     if (foreground >= LIGHT_BLACK && foreground <= DARK_WHITE) {
         int ansi_fg = (foreground >= DARK_BLACK)
