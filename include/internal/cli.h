@@ -1,8 +1,11 @@
+/* -*- coding: utf-8 -*- */
+/* Encoding: UTF-8 */
+/* META-DADOS DO ARQUIVO DE CÓDIGO, NÃO MODIFICAR POR FAVOR */
 #ifndef INTERNAL_CLI_H
 #define INTERNAL_CLI_H
 
 typedef enum cli_colors_e {
-    DEFAULT,
+    RESET,
     LIGHT_BLACK,
     LIGHT_RED,
     LIGHT_GREEN,
@@ -21,14 +24,7 @@ typedef enum cli_colors_e {
     DARK_WHITE
 } cli_colors_t;
 
-char* color_text(char* string, cli_colors_t color);                                                                                             
-void display_text(const char* format, ...);
-
-#ifdef _WIN32
-#include <windows.h>
-
-/* Map ANSI escape codes to Windows Console attributes */
-WORD get_windows_color(const char* ansi_code);
-#endif
+void tc_set_color(cli_colors_t foreground, cli_colors_t background);
+void tc_reset_color(void);
 
 #endif /* INTERNAL_CLI_H */

@@ -2,20 +2,20 @@
  * Tipos implementados:
  *  - Pilha estatica
  *  - Pilha dinamica
- *  - fila/lista estatica
- *  - fila/lista dinamica
+ *  - fila/fila estatica
+ *  - fila/fila dinamica
  *  - pilha circular estatica
  *  - Pilha circular dinamica
- *  - fila/lista circular estatica
- *  - fila/lista circular dinamica
- *  - fila/lista encadeada simples estatica
- *  - fila/lista encadeada simples dinamica
- *  - fila/lista duplamente encadeada estatica
- *  - fila/lista duplamente encadeada dinamica
- *  - fila/lista circular encadeada simples estatica
- *  - fila/lista circular encadeada simples dinamica
- *  - fila/lista circular duplamente encadeada estatica
- *  - fila/lista circular duplamente encadeada dinamica
+ *  - fila/fila circular estatica
+ *  - fila/fila circular dinamica
+ *  - fila/fila encadeada simples estatica
+ *  - fila/fila encadeada simples dinamica
+ *  - fila/fila duplamente encadeada estatica
+ *  - fila/fila duplamente encadeada dinamica
+ *  - fila/fila circular encadeada simples estatica
+ *  - fila/fila circular encadeada simples dinamica
+ *  - fila/fila circular duplamente encadeada estatica
+ *  - fila/fila circular duplamente encadeada dinamica
  *  - arvore
  *  - tabela hash
  *  - mapa hash

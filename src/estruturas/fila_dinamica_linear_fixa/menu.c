@@ -1,9 +1,9 @@
-#include "estruturas/fila_estatica_linear/menu.h"
+#include "estruturas/fila_dinamica_linear_fixa/menu.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-void exibir_fila_estatica(fila_estatica_t *fila_ptr,
-                          unsigned char modificadores) {
+void exibir_fila_fixa(fila_linear_fixa_t *fila_ptr,
+                      unsigned char modificadores) {
     unsigned long i;
     int exibir_conectores;
     int exibir_enderecos;
@@ -54,7 +54,7 @@ void exibir_fila_estatica(fila_estatica_t *fila_ptr,
 
             if (exibir_todos_os_valores) {
                 /* Exibe cada elemento como uma linha da tabela. */
-                for (i = fila_ptr->inicio; i < fila_ptr->capacidade; i++) {
+                for (i = 0; i < fila_ptr->capacidade; i++) {
                     if (exibir_todos_enderecos || exibir_enderecos) {
                         printf(SHOW_STRING0, i, fila_ptr->dados_ptr[i]);
                         printf("| %15p |", (void *)&fila_ptr->dados_ptr[i]);
@@ -65,30 +65,16 @@ void exibir_fila_estatica(fila_estatica_t *fila_ptr,
                     printf("\n");
                 }
             } else {
-                if (exibir_todos_os_valores) {
-                    /* Exibe cada elemento como uma linha da tabela. */
-                    for (i = fila_ptr->inicio; i < fila_ptr->capacidade; i++) {
-                        if (exibir_todos_enderecos || exibir_enderecos) {
-                            printf(SHOW_STRING0, i, fila_ptr->dados_ptr[i]);
-                            printf("| %15p |", (void *)&fila_ptr->dados_ptr[i]);
-                        } else {
-                            printf(SHOW_STRING1, i, fila_ptr->dados_ptr[i]);
-                            printf("|");
-                        }
-                        printf("\n");
+                /* Exibe cada elemento como uma linha da tabela. */
+                for (i = fila_ptr->inicio; i < fila_ptr->final; i++) {
+                    if (exibir_todos_enderecos || exibir_enderecos) {
+                        printf(SHOW_STRING0, i, fila_ptr->dados_ptr[i]);
+                        printf("| %15p |", (void *)&fila_ptr->dados_ptr[i]);
+                    } else {
+                        printf(SHOW_STRING1, i, fila_ptr->dados_ptr[i]);
+                        printf("|");
                     }
-                } else {
-                    /* Exibe cada elemento como uma linha da tabela. */
-                    for (i = fila_ptr->inicio; i < fila_ptr->final; i++) {
-                        if (exibir_todos_enderecos || exibir_enderecos) {
-                            printf(SHOW_STRING0, i, fila_ptr->dados_ptr[i]);
-                            printf("| %15p |", (void *)&fila_ptr->dados_ptr[i]);
-                        } else {
-                            printf(SHOW_STRING1, i, fila_ptr->dados_ptr[i]);
-                            printf("|");
-                        }
-                        printf("\n");
-                    }
+                    printf("\n");
                 }
             }
 
@@ -109,15 +95,28 @@ void exibir_fila_estatica(fila_estatica_t *fila_ptr,
             }
 
             /* Exibe cada elemento como uma linha da tabela. */
-            for (i = fila_ptr->inicio; i < fila_ptr->final; i++) {
-                if (exibir_todos_enderecos || exibir_enderecos) {
-                    printf(SHOW_STRING2, fila_ptr->dados_ptr[i]);
-                    printf("| %37p |", (void *)&fila_ptr->dados_ptr[i]);
-                } else {
-                    printf(SHOW_STRING3, fila_ptr->dados_ptr[i]);
-                    printf("|");
+            if (exibir_todos_os_valores) {
+                for (i = fila_ptr->inicio; i < fila_ptr->final; i++) {
+                    if (exibir_todos_enderecos || exibir_enderecos) {
+                        printf(SHOW_STRING2, fila_ptr->dados_ptr[i]);
+                        printf("| %37p |", (void *)&fila_ptr->dados_ptr[i]);
+                    } else {
+                        printf(SHOW_STRING3, fila_ptr->dados_ptr[i]);
+                        printf("|");
+                    }
+                    printf("\n");
                 }
-                printf("\n");
+            } else {
+                for (i = 0; i < fila_ptr->capacidade; i++) {
+                    if (exibir_todos_enderecos || exibir_enderecos) {
+                        printf(SHOW_STRING2, fila_ptr->dados_ptr[i]);
+                        printf("| %37p |", (void *)&fila_ptr->dados_ptr[i]);
+                    } else {
+                        printf(SHOW_STRING3, fila_ptr->dados_ptr[i]);
+                        printf("|");
+                    }
+                    printf("\n");
+                }
             }
             printf("\\---------------------------------------------------------"
                    "---------------------/\n");
@@ -139,7 +138,7 @@ void exibir_fila_estatica(fila_estatica_t *fila_ptr,
             }
             printf("\n");
         } else {
-            /* Exibe em formato de lista (com separador configurável). */
+            /* Exibe em formato de fila (com separador configurável). */
             for (i = fila_ptr->inicio; i < fila_ptr->final; i++) {
                 printf(SHOW_STRING4, fila_ptr->dados_ptr[i]);
 
@@ -158,81 +157,20 @@ void exibir_fila_estatica(fila_estatica_t *fila_ptr,
     }
 }
 
-void testar_fila_estatica_automatico(void) {
-    fila_estatica_t *fila;
-    fila = criar_fila_estatica_ret(8);
-    inserir_valor_fila_estatica_ret(fila, 99);
-    inserir_valor_fila_estatica_ret(fila, 333333);
-    inserir_valor_posicao_fila_estatica(fila, 4, 777);
-    inserir_valor_fila_estatica_ret(fila, 44);
-    exibir_fila_estatica(fila, (1 << 5));
-    exibir_fila_estatica(fila, 0);
-
-    remover_valor_fila_estatica_ret(fila);
-    exibir_fila_estatica(fila, (1 << 5));
-    exibir_fila_estatica(fila, 0);
-    remover_valor_fila_estatica_ret(fila);
-    exibir_fila_estatica(fila, (1 << 5));
-    exibir_fila_estatica(fila, 0);
-    remover_valor_fila_estatica_ret(fila);
-    exibir_fila_estatica(fila, (1 << 5));
-    exibir_fila_estatica(fila, 0);
-    remover_valor_fila_estatica_ret(fila);
-    exibir_fila_estatica(fila, (1 << 5));
-    exibir_fila_estatica(fila, 0);
-    realocar_mover_fila_estatica(fila);
-    exibir_fila_estatica(fila, (1 << 5));
-    exibir_fila_estatica(fila, 0);
-
-    reiniciar_fila_estatica(fila);
-    exibir_fila_estatica(fila, (1 << 5));
-
-    inserir_valor_fila_estatica_ret(fila, 99);
-    inserir_valor_fila_estatica_ret(fila, 333333);
-    inserir_valor_fila_estatica_ret(fila, 1);
-    inserir_valor_fila_estatica_ret(fila, 2);
-    inserir_valor_fila_estatica_ret(fila, 3);
-    exibir_fila_estatica(fila, (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3) |
-                                   (1 << 4) | (1 << 5));
-    exibir_fila_estatica(fila, (1 << 0) | (1 << 2) | (1 << 4) | (1 << 5));
-    exibir_fila_estatica(fila,
-                         (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3) | (1 << 5));
-    exibir_fila_estatica(fila, (1 << 0) | (1 << 2) | (1 << 5));
-    exibir_fila_estatica(fila, (1 << 0) | (1 << 5));
-    exibir_fila_estatica(fila, (1 << 5));
-    exibir_fila_estatica(fila, (1 << 1) | (1 << 5));
-    exibir_fila_estatica(fila, 0);
-    exibir_fila_estatica(fila, (1 << 1));
-    remover_valor_posicao_fila_estatica(fila, 3);
-    exibir_fila_estatica(fila, (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3) |
-                                   (1 << 4) | (1 << 5));
-
-    destruir_fila_estatica_ptr(fila);
-}
-
-
-
-void fila_estatica_menu_interativo(void) {
-    static unsigned char escolha;
-    static unsigned char escolha_exibicao;
-    static unsigned char opcoes_exibicao;
-    static unsigned char exibir_ao_mudar;
-    static unsigned long capacidade;
-    static unsigned char posicao_valida_adicionar;
-    static MACRO_FILA_ESTATICA_TIPO valor_pos;
-    static unsigned long pos;
-    static fila_estatica_t *fila;
-    static MACRO_FILA_ESTATICA_TIPO valor_removido_pos;
-    static MACRO_FILA_ESTATICA_TIPO valor;
-    static MACRO_FILA_ESTATICA_TIPO valor_removido;
-    static unsigned char posicao_valida_remover;
-    static unsigned long remover_posicao;
+void fila_fixa_menu_interativo(void) {
+    unsigned char escolha;
+    unsigned char escolha_exibicao;
+    unsigned char opcoes_exibicao;
+    unsigned char exibir_ao_mudar;
+    unsigned long capacidade;
+    fila_linear_fixa_t *fila;
+    MACRO_FILA_FIXA_TIPO valor;
+    MACRO_FILA_FIXA_TIPO valor_removido;
 
     fila = NULL;
     opcoes_exibicao = 0;
     exibir_ao_mudar = 0;
-    posicao_valida_adicionar = 1;
-    posicao_valida_remover = 1;
+    capacidade = 0;
 
 /* Usamos diretrizes do pré-processador para definir o comando correto
    para limpar a saida do terminal. */
@@ -242,19 +180,18 @@ void fila_estatica_menu_interativo(void) {
     system("clear");
 #endif
     do {
-        printf("Menu interativo de teste e exibição da fila linear estatica\n");
+        printf("Menu interativo de teste e exibição da fila linear de alocação "
+               "dinamica e tamanho fixo\n");
         printf("Selecione sua opção digitando o numero entre colchetes e "
-               "pressionando ENTER.\n");
-        printf("[1] - Criar Lista\n");
+               "pressionando ENTER.\n\n");
+        printf("[1] - Criar fila\n");
         printf("[2] - Adicionar elemento\n");
-        printf("[3] - Adicionar elemento na posição\n");
-        printf("[4] - Remover elemento\n");
-        printf("[5] - Remover elemento na posição\n");
-        printf("[6] - Reiniciar Fila\n");
-        printf("[7] - Re-alocar elementos\n");
-        printf("[8] - Configurar Exibição da lista\n");
-        printf("[9] - Exibir Lista\n");
-        printf("[10] - Exibir Ajuda\n");
+        printf("[3] - Remover elemento\n");
+        printf("[4] - Reiniciar fila\n");
+        printf("[5] - Re-alocar elementos\n");
+        printf("[6] - Configurar exibição da fila\n");
+        printf("[7] - Exibir fila\n");
+        printf("[8] - Exibir Ajuda\n");
         printf("[0] - Sair\n");
         printf("\n\n");
 
@@ -269,30 +206,46 @@ void fila_estatica_menu_interativo(void) {
 #else
             system("clear");
 #endif
-            printf("[1] CRIAR LISTA\n\n");
-            printf("Insira a capacidade da lista: ");
-            scanf("%lu", &capacidade);
-            if (fila == NULL) {
-                fila = criar_fila_estatica_ret(capacidade);
-            } else {
-                destruir_fila_estatica_ptr(fila);
-                fila = criar_fila_estatica_ret(capacidade);
-            }
+            do {
+                printf("[1] CRIAR FILA\n\n");
+                printf("Insira a capacidade da fila: ");
+                scanf("%lu", &capacidade);
+
+                if (capacidade <= 0) {
+#ifdef _WIN32
+                    system("cls");
+#else
+                    system("clear");
+#endif
+                    printf("A capacidade deve ser um número positivo maior que "
+                           "zero\n\n");
+                    continue;
+                } else {
+                    if (fila == NULL) {
+                        fila = criar_fila_fixa_ret(capacidade);
+                    } else {
+                        destruir_fila_fixa_ptr(fila);
+                        fila = criar_fila_fixa_ret(capacidade);
+                    }
 
 /* Usamos diretrizes do pré-processador para definir o comando correto
-   para limpar a saida do terminal. */
+para limpar a saida do terminal. */
 #ifdef _WIN32
-            system("cls");
+                    system("cls");
 #else
-            system("clear");
+                    system("clear");
 #endif
-            printf(
-                "FILA ESTATICA LINEAR CRIADA COM CAPACIDADE PARA %lu ITEMS.\n",
-                capacidade);
-            if (exibir_ao_mudar != 0) {
-                exibir_fila_estatica(fila, opcoes_exibicao);
-            }
-            printf("\n");
+                    printf("FILA FIXA LINEAR CRIADA COM CAPACIDADE PARA %lu "
+                           "ITEMS.\n",
+                           capacidade);
+                    if (exibir_ao_mudar != 0) {
+                        exibir_fila_fixa(fila, opcoes_exibicao);
+                    }
+                    printf("\n");
+                    break;
+                }
+            } while (capacidade <= 0);
+            capacidade = 0;
             break;
         case 2:
 #ifdef _WIN32
@@ -305,7 +258,7 @@ void fila_estatica_menu_interativo(void) {
             printf("Insira o valor desejado: ");
             scanf(SCANF_FORMAT, &valor);
 
-            inserir_valor_fila_estatica_ret(fila, valor);
+            inserir_valor_fila_fixa_ret(fila, valor);
 
 #ifdef _WIN32
             system("cls");
@@ -322,54 +275,19 @@ void fila_estatica_menu_interativo(void) {
                     printf("Endereço do Final: %p\n\n",
                            (void *)(&fila->dados_ptr[fila->final + 1]));
                 }
-                exibir_fila_estatica(fila, opcoes_exibicao);
+                exibir_fila_fixa(fila, opcoes_exibicao);
             }
             printf("\n");
             break;
         case 3:
-            do {
-#ifdef _WIN32
-                system("cls");
-#else
-                system("clear");
-#endif
-                printf("[3] ADICIONAR ELEMENTO NA POSIÇÃO\n\n");
-
-                printf("Insira a posição desejada: ");
-                scanf("%lu", &pos);
-
-                if (pos <= fila->final && pos >= fila->inicio) {
-                    posicao_valida_adicionar = !posicao_valida_adicionar;
-                }
-            } while (posicao_valida_adicionar != 0);
-
-            printf("Insira o valor desejado: ");
-            scanf(SCANF_FORMAT, &valor_pos);
-
-            inserir_valor_posicao_fila_estatica(fila, pos, valor_pos);
-
-            if (exibir_ao_mudar != 0) {
-                if ((opcoes_exibicao & (1 << 1)) != 0) {
-                    printf("Endereço de Inicio: %p\n",
-                           (void *)(&fila->dados_ptr[fila->inicio]));
-                    printf("Endereço do Elemento: %p\n",
-                           (void *)(&fila->dados_ptr[pos]));
-                    printf("Endereço do Final: %p\n\n",
-                           (void *)(&fila->dados_ptr[fila->final + 1]));
-                }
-                exibir_fila_estatica(fila, opcoes_exibicao);
-            }
-            printf("\n");
-            break;
-        case 4:
 #ifdef _WIN32
             system("cls");
 #else
             system("clear");
 #endif
-            printf("[4] REMOVER ELEMENTO\n\n");
+            printf("[3] REMOVER ELEMENTO\n\n");
 
-            valor_removido = remover_valor_fila_estatica_ret(fila);
+            valor_removido = remover_valor_fila_fixa_ret(fila);
 
 #ifdef _WIN32
             system("cls");
@@ -380,40 +298,45 @@ void fila_estatica_menu_interativo(void) {
             printf(PRINTF_FORMAT_STR, valor_removido);
 
             if (exibir_ao_mudar != 0) {
-                exibir_fila_estatica(fila, opcoes_exibicao);
+                if ((opcoes_exibicao & (1 << 1)) != 0) {
+                    printf("Endereço de Inicio: %p\n",
+                           (void *)(&fila->dados_ptr[fila->inicio]));
+                    printf("Endereço do Elemento: %p\n",
+                           (void *)(&valor_removido));
+                    printf("Endereço do Final: %p\n\n",
+                           (void *)(&fila->dados_ptr[fila->final + 1]));
+                }
+                exibir_fila_fixa(fila, opcoes_exibicao);
             }
             printf("\n");
             break;
-        case 5:
-            do {
-#ifdef _WIN32
-                system("cls");
-#else
-                system("clear");
-#endif
-                printf("[5] REMOVER ELEMENTO NA POSIÇÃO\n\n");
-
-                printf("Insira a posição desejada: ");
-                scanf("%lu", &remover_posicao);
-                if (remover_posicao <= fila->final &&
-                    remover_posicao >= fila->inicio) {
-                    posicao_valida_remover = !posicao_valida_remover;
-                }
-            } while (posicao_valida_remover != 0);
-
-            valor_removido_pos =
-                remover_valor_posicao_fila_estatica(fila, remover_posicao);
-
+        case 4:
 #ifdef _WIN32
             system("cls");
 #else
             system("clear");
 #endif
+            printf("[4] REINICIAR FILA\n\n");
 
-            printf(PRINTF_FORMAT_STR, valor_removido_pos);
+            reiniciar_fila_fixa(fila);
 
             if (exibir_ao_mudar != 0) {
-                exibir_fila_estatica(fila, opcoes_exibicao);
+                exibir_fila_fixa(fila, opcoes_exibicao);
+            }
+            printf("\n");
+            break;
+        case 5:
+#ifdef _WIN32
+            system("cls");
+#else
+            system("clear");
+#endif
+            printf("[5] REALOCAR ELEMENTOS\n\n");
+
+            realocar_mover_fila_fixa(fila);
+
+            if (exibir_ao_mudar != 0) {
+                exibir_fila_fixa(fila, opcoes_exibicao);
             }
             printf("\n");
             break;
@@ -423,41 +346,11 @@ void fila_estatica_menu_interativo(void) {
 #else
             system("clear");
 #endif
-            printf("[6] REINICIAR FILA\n\n");
-
-            reiniciar_fila_estatica(fila);
-
-            if (exibir_ao_mudar != 0) {
-                exibir_fila_estatica(fila, opcoes_exibicao);
-            }
-            printf("\n");
-            break;
-        case 7:
-#ifdef _WIN32
-            system("cls");
-#else
-            system("clear");
-#endif
-            printf("[6] REALOCAR ELEMENTOS\n\n");
-
-            realocar_mover_fila_estatica(fila);
-
-            if (exibir_ao_mudar != 0) {
-                exibir_fila_estatica(fila, opcoes_exibicao);
-            }
-            printf("\n");
-            break;
-        case 8:
-#ifdef _WIN32
-            system("cls");
-#else
-            system("clear");
-#endif
 
             do {
-                printf("[8] CONFIGURAR OPÇÕES DE EXIBIÇÃO\n\n");
+                printf("[6] CONFIGURAR OPÇÕES DE EXIBIÇÃO\n\n");
                 printf("Selecione o valor que deseja alterar digitando o "
-                       "numero entreo parenteses e digitando ENTER\n");
+                       "numero entre parenteses e digitando ENTER\n");
                 printf("esse programa alterna os valores, então valores que "
                        "forem definidos como\n");
                 printf(
@@ -467,7 +360,7 @@ void fila_estatica_menu_interativo(void) {
                        ((opcoes_exibicao & (1 << 0)) != 0) ? "SELECIONADO"
                                                            : "DISPONIVEL");
                 printf("\t\tExibe -> ao invés de virgulas na exibição não "
-                       "tabular da lista.\n");
+                       "tabular da fila.\n");
                 printf(
                     "\t(2) - Exibir endereço do inicio, atual e final [%s]\n",
                     ((opcoes_exibicao & (1 << 1)) != 0) ? "SELECIONADO"
@@ -476,25 +369,25 @@ void fila_estatica_menu_interativo(void) {
                 printf("\t(3) - Exibir como tabela [%s]\n",
                        ((opcoes_exibicao & (1 << 2)) != 0) ? "SELECIONADO"
                                                            : "DISPONIVEL");
-                printf("\t\tExibe a lista como uma tabela\n");
+                printf("\t\tExibe a fila como uma tabela\n");
                 printf("\t(4) - Exibir todos os endereços [%s]\n",
                        ((opcoes_exibicao & (1 << 3)) != 0) ? "SELECIONADO"
                                                            : "DISPONIVEL");
                 printf("\t\tExibe os endereços nas visões tabular e linear da "
-                       "lista\n");
+                       "fila\n");
                 printf("\t(5) - Exibir posições [%s]\n",
                        ((opcoes_exibicao & (1 << 4)) != 0) ? "SELECIONADO"
                                                            : "DISPONIVEL");
-                printf("\t\tExibe os indices na visão tabular da lista\n");
-                printf("\t(6) - Exibir lista completa [%s]\n",
+                printf("\t\tExibe os indices na visão tabular da fila\n");
+                printf("\t(6) - Exibir fila completa [%s]\n",
                        ((opcoes_exibicao & (1 << 5)) != 0) ? "SELECIONADO"
                                                            : "DISPONIVEL");
                 printf("\t\tExibe todos os valores, mesmo que os espaços "
                        "estejam em branco.\n");
-                printf("\t(9) - Exibir lista em todas as ações [%s]\n",
+                printf("\t(9) - Exibir fila em todas as ações [%s]\n",
                        (exibir_ao_mudar != 0) ? "SELECIONADO" : "DISPONIVEL");
-                printf("\t\tExibe a lista em todas as ações, nota-se que se "
-                       "não definir a opção (6), caso a lista esteja em "
+                printf("\t\tExibe a fila em todas as ações, nota-se que se "
+                       "não definir a opção (6), caso a fila esteja em "
                        "branco, nada será exibido.\n");
                 printf("\t(0) - Voltar ao menu principal\n");
                 printf("\t\tFecha esse menu e retorna ao menu principal.\n");
@@ -578,16 +471,16 @@ void fila_estatica_menu_interativo(void) {
                 }
             } while (escolha_exibicao != 0);
             break;
-        case 9:
+        case 7:
 #ifdef _WIN32
             system("cls");
 #else
             system("clear");
 #endif
-            printf("[9] EXIBIR LISTA\n\n");
-            exibir_fila_estatica(fila, opcoes_exibicao);
+            printf("[7] EXIBIR FILA\n\n");
+            exibir_fila_fixa(fila, opcoes_exibicao);
             break;
-        case 10:
+        case 8:
 #ifdef _WIN32
             system("cls");
 #else
@@ -599,23 +492,19 @@ void fila_estatica_menu_interativo(void) {
                    "previamente criada\n");
             printf("A segunda opção você insere um valor referente ao tipo da "
                    "fila na ultima posição\n");
-            printf("A terceira opção você insere um valor em uma dada posição "
-                   "dentro dos limites da fila (pode ser computacionalmente "
-                   "caro)\n");
-            printf("A quarta opção você remove o valor no inicio da fila\n");
-            printf(
-                "A quinta opção remove um valor em uma dada posição e reajusta "
-                "todos os valores (pode ser computacionalmente caro)\n");
-            printf("A sexta opção reinicia a fila e limpa as celulas de "
+            printf("A terceira opção você remove o valor no inicio da fila\n");
+            printf("A quarta opção reinicia a fila e limpa as celulas de "
                    "memória, reciclando a fila sem criar uma nova (alocação de "
                    "memória é custoso)\n");
             printf(
-                "A sétima re-aloca os elementos para alinhar novamente a fila "
+                "A quinta re-aloca os elementos para alinhar novamente a fila "
                 "e as celulas de memoria (pode ser computacionalmente caro)\n");
-            printf("A oitava opção configura todas as opções de exibição da "
-                   "lista, inclusive a exibição da mesma em todas as ações "
-                   "(recomendo acessar antes de criar a lista)\n");
-            printf("A nona opção exibe este menu\n");
+            printf("A sexta opção configura todas as opções de exibição da "
+                   "fila, inclusive a exibição da mesma em todas as ações "
+                   "(recomendo acessar antes de criar a fila)\n");
+            printf("A sétima opção exibe a fila usando as opções definidas na "
+                   "sexta opção\n");
+            printf("A oitava opção exibe este menu\n");
             printf(
                 "A última opção sai do programa e limpa toda memória usada.\n");
             break;
@@ -637,6 +526,7 @@ void fila_estatica_menu_interativo(void) {
     } while (escolha != 0);
 
     if (fila != NULL) {
-        destruir_fila_estatica_ptr(fila);
+        destruir_fila_fixa_ptr(fila);
+        fila = NULL;
     }
 }

@@ -16,7 +16,7 @@
  *  3. Implementação de funções
  *  4. Testes e modo de uso.
  * Ele ira usar esta estrutura:
- *  1. Lista Encadeada <Estrutura de Dado Implementada>
+ *  1. Fila Encadeada <Estrutura de Dado Implementada>
  *      1.1. Definições de tipos
  *      1.2. Prototipo de funções
  *      1.3. Implementação de funções
@@ -31,7 +31,7 @@
  *biblioteca de código da instituição.
  *
  * Tipos implementados:
- *  - Fila (Lista)
+ *  - Fila (Fila)
  *      - Versões: Alocação Estatica e Alocação Dinâmica.
  *      - Linear e Circular.
  *      - Simples, Encadeada e Duplamente Encadeada.
@@ -171,7 +171,7 @@
         1 - signed short  5 - unsigned short  9  - short 13 - double
         2 - signed int    6 - unsigned int    10 - int
         3 - signed long   7 - unsigned long   11 - long */
-#define MACRO_FILA_ESTATICA_CODIGO 12
+#define MACRO_FILA_ESTATICA_CODIGO 2
 
 /* Esses macros usados através do código para refletir a mudança no tipo da
    estrutura de dados, eles definem as strings de formatação e exibição além de
@@ -375,20 +375,20 @@ MACRO_FILA_ESTATICA_TIPO
 remover_valor_fila_estatica_ret(fila_estatica_t *fila_ptr);
 
 /* essa função exibe a fila estatica, o parametro de modificadores altera o modo
-   de exibição da lista, ele utiliza mascara de bits para selecionar os valores.
+   de exibição da fila, ele utiliza mascara de bits para selecionar os valores.
    modificadores:
     - (0b10000000 - 1 bit) exibir conectores: exibe uma seta "->" entre os
         valores caso o bit seja zero, irá exibir uma virgula no lugar.
     - (0b01000000 - 2 bit) exibir endereços inicio, atual e fim: exibe os
         endereços do inicio e do fim sempre e exibe o endereço do valor
-        adicionado ou removido da lista quando executado.
+        adicionado ou removido da fila quando executado.
     - (0b00100000 - 3 bit) exibir como tabela: exibe a fila em forma de tabela
         incompativel com o modificador do bit 1.
     - (0b00010000 - 4 bit) exibir todos os endereços: modificador da forma de
         tabelas, exibe os endereços na memória de todos os valores.
     - (0b00001000 - 5 bit) exibir todas as posições: modificador da forma de
         tabelas, exibe as posições (indices) dos elementos.
-    - (0b00010000 - 6 bit) exibir lista completa: exibe todos os valores
+    - (0b00010000 - 6 bit) exibir fila completa: exibe todos os valores
         inclusive aqueles que foram removidos, e não somente os valores
         significativos da fila.
     - (bits 7 a 8): reservado.
@@ -401,12 +401,12 @@ remover_valor_fila_estatica_ret(fila_estatica_t *fila_ptr);
         exibir_fila_estatica(fila_ptr, (1 << 0) | (1 << 3) | (1 << 5));
         exibir_fila_estatica(fila_ptr, 0);
 
-   Porque usar mascara de bits? Para uma lista de booleanos é mais eficiente
+   Porque usar mascara de bits? Para uma fila de booleanos é mais eficiente
    usar a representação binária de um numero do que uma array de booleanos. Você
    pode ver mais nesse programa <https://onlinegdb.com/m0GW2gh22> Tamanho do
    booleano padrão: 1 byte(s) (8 bits) Tamanho do booleano customizado: 4
-   byte(s) (32 bits) Tamanho de um char: 1  byte(s) (8 bits) Tamanho da lista de
-   8 booleanos padrões: 8 byte(s) (64 bits) Tamanho da lista de 8 booleanos
+   byte(s) (32 bits) Tamanho de um char: 1  byte(s) (8 bits) Tamanho da fila de
+   8 booleanos padrões: 8 byte(s) (64 bits) Tamanho da fila de 8 booleanos
    customizados: 32 byte(s) (256 bits) Usando um char ao invés de um booleano
    padrão temos uma economia de 87.5% para armazenar a mesma quantidade de
    informação. Usando um char ao invés de um booleano customizado temos uma
@@ -418,15 +418,15 @@ void exibir_fila_estatica(fila_estatica_t *fila_ptr,
    indices para zero */
 void reiniciar_fila_estatica(fila_estatica_t *fila_ptr);
 
-/* essa função move e re-aloca os elementos da lista estatica */
+/* essa função move e re-aloca os elementos da fila estatica */
 void realocar_mover_fila_estatica(fila_estatica_t *fila_ptr);
 
-/* essa função insere um valor em uma posição especifica da lista */
+/* essa função insere um valor em uma posição especifica da fila */
 int inserir_valor_posicao_fila_estatica(fila_estatica_t *fila_ptr,
                                         unsigned long indice,
                                         MACRO_FILA_ESTATICA_TIPO valor);
 
-/* essa função remove um valor em uma posição especifica da lista. */
+/* essa função remove um valor em uma posição especifica da fila. */
 int remover_valor_posicao_fila_estatica(fila_estatica_t *fila_ptr,
                                         unsigned long indice);
 
@@ -641,7 +641,7 @@ void exibir_fila_estatica(fila_estatica_t *fila_ptr,
             }
             printf("\n");
         } else {
-            /* Exibe em formato de lista (com separador configurável). */
+            /* Exibe em formato de fila (com separador configurável). */
             for (i = fila_ptr->inicio; i < fila_ptr->final; i++) {
                 printf(SHOW_STRING4, fila_ptr->dados_ptr[i]);
 
@@ -664,10 +664,10 @@ void reiniciar_fila_estatica(fila_estatica_t *fila_ptr) {
     unsigned long elementos_presentes;
     unsigned long i;
 
-    /* Calcula o total de items presentes na lista */
+    /* Calcula o total de items presentes na fila */
     elementos_presentes = fila_ptr->final - fila_ptr->inicio;
 
-    /* Navega pela lista zerando todos os elementos */
+    /* Navega pela fila zerando todos os elementos */
     for (i = 0; i < elementos_presentes; i++) {
         fila_ptr->dados_ptr[i] = 0;
     }
@@ -845,15 +845,15 @@ void testar_fila_estatica_interativo(void) {
         printf("Menu interativo de teste e exibição da fila linear estatica\n");
         printf("Selecione sua opção digitando o numero entre colchetes e "
                "pressionando ENTER.\n");
-        printf("[1] - Criar Lista\n");
+        printf("[1] - Criar Fila\n");
         printf("[2] - Adicionar elemento\n");
         printf("[3] - Adicionar elemento na posição\n");
         printf("[4] - Remover elemento\n");
         printf("[5] - Remover elemento na posição\n");
         printf("[6] - Reiniciar Fila\n");
         printf("[7] - Re-alocar elementos\n");
-        printf("[8] - Configurar Exibição da lista\n");
-        printf("[9] - Exibir Lista\n");
+        printf("[8] - Configurar Exibição da fila\n");
+        printf("[9] - Exibir Fila\n");
         printf("[10] - Exibir Ajuda\n");
         printf("[0] - Sair\n");
         printf("\n\n");
@@ -869,8 +869,8 @@ void testar_fila_estatica_interativo(void) {
 #else
             system("clear");
 #endif
-            printf("[1] CRIAR LISTA\n\n");
-            printf("Insira a capacidade da lista: ");
+            printf("[1] CRIAR FILA\n\n");
+            printf("Insira a capacidade da fila: ");
             scanf("%lu", &capacidade);
             if (fila == NULL) {
                 fila = criar_fila_estatica_ret(capacidade);
@@ -1062,12 +1062,12 @@ void testar_fila_estatica_interativo(void) {
                        "forem definidos como\n");
                 printf(
                     "verdadeiro serão transformados em falso e vice-versa.\n");
-                printf("Lista de opções:\n");
+                printf("Fila de opções:\n");
                 printf("\t(1) - Exibir conectores [%s]\n",
                        ((opcoes_exibicao & (1 << 0)) != 0) ? "SELECIONADO"
                                                            : "DISPONIVEL");
                 printf("\t\tExibe -> ao invés de virgulas na exibição não "
-                       "tabular da lista.\n");
+                       "tabular da fila.\n");
                 printf(
                     "\t(2) - Exibir endereço do inicio, atual e final [%s]\n",
                     ((opcoes_exibicao & (1 << 1)) != 0) ? "SELECIONADO"
@@ -1076,25 +1076,25 @@ void testar_fila_estatica_interativo(void) {
                 printf("\t(3) - Exibir como tabela [%s]\n",
                        ((opcoes_exibicao & (1 << 2)) != 0) ? "SELECIONADO"
                                                            : "DISPONIVEL");
-                printf("\t\tExibe a lista como uma tabela\n");
+                printf("\t\tExibe a fila como uma tabela\n");
                 printf("\t(4) - Exibir todos os endereços [%s]\n",
                        ((opcoes_exibicao & (1 << 3)) != 0) ? "SELECIONADO"
                                                            : "DISPONIVEL");
                 printf("\t\tExibe os endereços nas visões tabular e linear da "
-                       "lista\n");
+                       "fila\n");
                 printf("\t(5) - Exibir posições [%s]\n",
                        ((opcoes_exibicao & (1 << 4)) != 0) ? "SELECIONADO"
                                                            : "DISPONIVEL");
-                printf("\t\tExibe os indices na visão tabular da lista\n");
-                printf("\t(6) - Exibir lista completa [%s]\n",
+                printf("\t\tExibe os indices na visão tabular da fila\n");
+                printf("\t(6) - Exibir fila completa [%s]\n",
                        ((opcoes_exibicao & (1 << 5)) != 0) ? "SELECIONADO"
                                                            : "DISPONIVEL");
                 printf("\t\tExibe todos os valores, mesmo que os espaços "
                        "estejam em branco.\n");
-                printf("\t(9) - Exibir lista em todas as ações [%s]\n",
+                printf("\t(9) - Exibir fila em todas as ações [%s]\n",
                        (exibir_ao_mudar != 0) ? "SELECIONADO" : "DISPONIVEL");
-                printf("\t\tExibe a lista em todas as ações, nota-se que se "
-                       "não definir a opção (6), caso a lista esteja em "
+                printf("\t\tExibe a fila em todas as ações, nota-se que se "
+                       "não definir a opção (6), caso a fila esteja em "
                        "branco, nada será exibido.\n");
                 printf("\t(0) - Voltar ao menu principal\n");
                 printf("\t\tFecha esse menu e retorna ao menu principal.\n");
@@ -1184,7 +1184,7 @@ void testar_fila_estatica_interativo(void) {
 #else
             system("clear");
 #endif
-            printf("[9] EXIBIR LISTA\n\n");
+            printf("[9] EXIBIR FILA\n\n");
             exibir_fila_estatica(fila, opcoes_exibicao);
             break;
         case 10:
@@ -1213,8 +1213,8 @@ void testar_fila_estatica_interativo(void) {
                 "A sétima re-aloca os elementos para alinhar novamente a fila "
                 "e as celulas de memoria (pode ser computacionalmente caro)\n");
             printf("A oitava opção configura todas as opções de exibição da "
-                   "lista, inclusive a exibição da mesma em todas as ações "
-                   "(recomendo acessar antes de criar a lista)\n");
+                   "fila, inclusive a exibição da mesma em todas as ações "
+                   "(recomendo acessar antes de criar a fila)\n");
             printf("A nona opção exibe este menu\n");
             printf(
                 "A última opção sai do programa e limpa toda memória usada.\n");
