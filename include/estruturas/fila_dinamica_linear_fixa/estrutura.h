@@ -23,7 +23,7 @@
 #ifndef ESTRUTURAS_FILA_DINAMICA_LINEAR_FIXA_ESTRUTURA
 #define ESTRUTURAS_FILA_DINAMICA_LINEAR_FIXA_ESTRUTURA
 
-#include "macros.h"
+#include <estruturas/fila_dinamica_linear_fixa/macros.h>
 
 /* Uma struct que representa uma fila linear de alocação dinamica e tamanho fixo
    a ordem dos campos tem ligeira importancia, pois permite com que otimizemos 

@@ -9,7 +9,7 @@
 #ifndef ESTRUTURAS_PILHA_FIXA_LINEAR_MENU
 #define ESTRUTURAS_PILHA_FIXA_LINEAR_MENU
 
-#include "estrutura.h"
+#include <estruturas/pilha_dinamica_linear_fixa/estrutura.h>
 
 /* essa função exibe a pilha fixa, o parametro de modificadores altera o modo
    de exibição da pilha, ele utiliza mascara de bits para selecionar os valores.

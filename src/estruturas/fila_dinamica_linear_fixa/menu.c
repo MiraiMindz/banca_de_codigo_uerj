@@ -1,4 +1,5 @@
-#include "estruturas/fila_dinamica_linear_fixa/menu.h"
+#include <estruturas/fila_dinamica_linear_fixa/menu.h>
+#include <internal/cli.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -40,14 +41,31 @@ void exibir_fila_fixa(fila_linear_fixa_t *fila_ptr,
             printf("/----------------------------------------------------------"
                    "--------------------\\\n");
             if (exibir_todos_enderecos || exibir_enderecos) {
-                printf("|%-18s|", " INDICE");
-                printf("%-41s|", " VALOR");
-                printf("%18s|", "ENDEREÇO ");
+                printf("|");
+                tc_set_color(LIGHT_GREEN, DARK_BLACK);
+                printf("%-18s", " INDICE");
+                tc_reset_color();
+                printf("|");
+                tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                printf("%-41s", " VALOR");
+                tc_reset_color();
+                printf("|");
+                tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                printf("%18s", "ENDEREÇO ");
+                tc_reset_color();
+                printf("|");
                 printf("\n|------------------+---------------------------------"
                        "--------+-----------------|\n");
             } else {
-                printf("|%-38s|", " INDICE");
-                printf("%39s|", "VALOR ");
+                printf("|");
+                tc_set_color(LIGHT_GREEN, DARK_BLACK);
+                printf("%-38s", " INDICE");
+                tc_reset_color();
+                printf("|");
+                tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                printf("%39s", "VALOR ");
+                tc_reset_color();
+                printf("|");
                 printf("\n|--------------------------------------+-------------"
                        "--------------------------|\n");
             }
@@ -56,11 +74,29 @@ void exibir_fila_fixa(fila_linear_fixa_t *fila_ptr,
                 /* Exibe cada elemento como uma linha da tabela. */
                 for (i = 0; i < fila_ptr->capacidade; i++) {
                     if (exibir_todos_enderecos || exibir_enderecos) {
-                        printf(SHOW_STRING0, i, fila_ptr->dados_ptr[i]);
-                        printf("| %15p |", (void *)&fila_ptr->dados_ptr[i]);
+                        printf("| ");
+                        tc_set_color(LIGHT_GREEN, DARK_BLACK);
+                        printf(SHOW_STRING0A, i);
+                        tc_reset_color();
+                        printf(" | ");
+                        tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                        printf(SHOW_STRING0B, fila_ptr->dados_ptr[i]);
+                        tc_reset_color();
+                        printf(" | ");
+                        tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                        printf("%15p", (void *)&fila_ptr->dados_ptr[i]);
+                        tc_reset_color();
+                        printf(" |");
                     } else {
-                        printf(SHOW_STRING1, i, fila_ptr->dados_ptr[i]);
-                        printf("|");
+                        printf("| ");
+                        tc_set_color(LIGHT_GREEN, DARK_BLACK);
+                        printf(SHOW_STRING1A, i);
+                        tc_reset_color();
+                        printf(" | ");
+                        tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                        printf(SHOW_STRING1B, fila_ptr->dados_ptr[i]);
+                        tc_reset_color();
+                        printf(" |");
                     }
                     printf("\n");
                 }
@@ -68,11 +104,29 @@ void exibir_fila_fixa(fila_linear_fixa_t *fila_ptr,
                 /* Exibe cada elemento como uma linha da tabela. */
                 for (i = fila_ptr->inicio; i < fila_ptr->final; i++) {
                     if (exibir_todos_enderecos || exibir_enderecos) {
-                        printf(SHOW_STRING0, i, fila_ptr->dados_ptr[i]);
-                        printf("| %15p |", (void *)&fila_ptr->dados_ptr[i]);
+                        printf("| ");
+                        tc_set_color(LIGHT_GREEN, DARK_BLACK);
+                        printf(SHOW_STRING0A, i);
+                        tc_reset_color();
+                        printf(" | ");
+                        tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                        printf(SHOW_STRING0B, fila_ptr->dados_ptr[i]);
+                        tc_reset_color();
+                        printf(" | ");
+                        tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                        printf("%15p", (void *)&fila_ptr->dados_ptr[i]);
+                        tc_reset_color();
+                        printf(" |");
                     } else {
-                        printf(SHOW_STRING1, i, fila_ptr->dados_ptr[i]);
-                        printf("|");
+                        printf("| ");
+                        tc_set_color(LIGHT_GREEN, DARK_BLACK);
+                        printf(SHOW_STRING1A, i);
+                        tc_reset_color();
+                        printf(" | ");
+                        tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                        printf(SHOW_STRING1B, fila_ptr->dados_ptr[i]);
+                        tc_reset_color();
+                        printf(" |");
                     }
                     printf("\n");
                 }
@@ -84,12 +138,23 @@ void exibir_fila_fixa(fila_linear_fixa_t *fila_ptr,
             printf("/----------------------------------------------------------"
                    "--------------------\\\n");
             if (exibir_todos_enderecos || exibir_enderecos) {
-                printf("|%-38s|", " VALOR");
-                printf("%40s|", "ENDEREÇO ");
+                printf("|");
+                tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                printf("%-38s", " VALOR");
+                tc_reset_color();
+                printf("|");
+                tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                printf("%40s", "ENDEREÇO ");
+                tc_reset_color();
+                printf("|");
                 printf("\n|--------------------------------------+-------------"
                        "--------------------------|\n");
             } else {
-                printf("|%-78s|", " VALOR");
+                printf("|");
+                tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                printf("%-78s", " VALOR");
+                tc_reset_color();
+                printf("|");
                 printf("\n|----------------------------------------------------"
                        "--------------------------|\n");
             }
@@ -98,22 +163,42 @@ void exibir_fila_fixa(fila_linear_fixa_t *fila_ptr,
             if (exibir_todos_os_valores) {
                 for (i = fila_ptr->inicio; i < fila_ptr->final; i++) {
                     if (exibir_todos_enderecos || exibir_enderecos) {
+                        printf("| ");
+                        tc_set_color(LIGHT_WHITE, DARK_BLACK);
                         printf(SHOW_STRING2, fila_ptr->dados_ptr[i]);
-                        printf("| %37p |", (void *)&fila_ptr->dados_ptr[i]);
+                        tc_reset_color();
+                        printf(" | ");
+                        tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                        printf("%37p", (void *)&fila_ptr->dados_ptr[i]);
+                        tc_reset_color();
+                        printf(" |");
                     } else {
+                        printf("| ");
+                        tc_set_color(LIGHT_BLUE, DARK_BLACK);
                         printf(SHOW_STRING3, fila_ptr->dados_ptr[i]);
-                        printf("|");
+                        tc_reset_color();
+                        printf(" |");
                     }
                     printf("\n");
                 }
             } else {
                 for (i = 0; i < fila_ptr->capacidade; i++) {
                     if (exibir_todos_enderecos || exibir_enderecos) {
+                        printf("| ");
+                        tc_set_color(LIGHT_WHITE, DARK_BLACK);
                         printf(SHOW_STRING2, fila_ptr->dados_ptr[i]);
-                        printf("| %37p |", (void *)&fila_ptr->dados_ptr[i]);
+                        tc_reset_color();
+                        printf(" | ");
+                        tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                        printf("%37p", (void *)&fila_ptr->dados_ptr[i]);
+                        tc_reset_color();
+                        printf(" |");
                     } else {
+                        printf("| ");
+                        tc_set_color(LIGHT_BLUE, DARK_BLACK);
                         printf(SHOW_STRING3, fila_ptr->dados_ptr[i]);
-                        printf("|");
+                        tc_reset_color();
+                        printf(" |");
                     }
                     printf("\n");
                 }
@@ -124,11 +209,16 @@ void exibir_fila_fixa(fila_linear_fixa_t *fila_ptr,
     } else {
         if (exibir_todos_os_valores) {
             for (i = 0; i < fila_ptr->capacidade; i++) {
+                tc_set_color(LIGHT_WHITE, DARK_BLACK);
                 printf(SHOW_STRING4, fila_ptr->dados_ptr[i]);
+                tc_reset_color();
 
                 /* Exibe o endereço se configurado. */
                 if (exibir_enderecos) {
-                    printf(" (%p)\n", (void *)&fila_ptr->dados_ptr[i]);
+                    tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                    printf(" (%p)", (void *)&fila_ptr->dados_ptr[i]);
+                    tc_reset_color();
+                    printf("\n");
                 } else {
                     /* Exibe o conector entre elementos. */
                     if (i != (fila_ptr->capacidade - 1)) {
@@ -140,11 +230,16 @@ void exibir_fila_fixa(fila_linear_fixa_t *fila_ptr,
         } else {
             /* Exibe em formato de fila (com separador configurável). */
             for (i = fila_ptr->inicio; i < fila_ptr->final; i++) {
+                tc_set_color(LIGHT_WHITE, DARK_BLACK);
                 printf(SHOW_STRING4, fila_ptr->dados_ptr[i]);
+                tc_reset_color();
 
                 /* Exibe o endereço se configurado. */
                 if (exibir_enderecos) {
-                    printf(" (%p)\n", (void *)&fila_ptr->dados_ptr[i]);
+                    tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                    printf(" (%p)", (void *)&fila_ptr->dados_ptr[i]);
+                    tc_reset_color();
+                    printf("\n");
                 } else {
                     /* Exibe o conector entre elementos. */
                     if (i != fila_ptr->final - 1) {

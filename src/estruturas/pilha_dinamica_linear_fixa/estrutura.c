@@ -1,7 +1,7 @@
 /* -*- coding: utf-8 -*- */
 /* Encoding: UTF-8 */
 /* META-DADOS DO ARQUIVO DE CÓDIGO, NÃO MODIFICAR POR FAVOR */
-#include "estruturas/pilha_dinamica_linear_fixa/estrutura.h"
+#include <estruturas/pilha_dinamica_linear_fixa/estrutura.h>
 #include <stdlib.h>
 #include <string.h>
 

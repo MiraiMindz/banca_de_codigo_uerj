@@ -1,7 +1,7 @@
 /* -*- coding: utf-8 -*- */
 /* Encoding: UTF-8 */
 /* META-DADOS DO ARQUIVO DE CÓDIGO, NÃO MODIFICAR POR FAVOR */
-#include "estruturas/fila_dinamica_linear_fixa/estrutura.h"
+#include <estruturas/fila_dinamica_linear_fixa/estrutura.h>
 #include <stdlib.h>
 
 fila_linear_fixa_t *criar_fila_fixa_ret(unsigned long capacidade) {

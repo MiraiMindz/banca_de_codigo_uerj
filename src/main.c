@@ -6,7 +6,7 @@
 *******************************************************************************/
 
 
-#include "project.h"
+#include <project.h>
 
 int main(void) {
     main_menu();

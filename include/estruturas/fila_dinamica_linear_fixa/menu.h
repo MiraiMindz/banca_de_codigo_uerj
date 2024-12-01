@@ -9,7 +9,7 @@
 #ifndef ESTRUTURAS_FILA_FIXA_LINEAR_MENU
 #define ESTRUTURAS_FILA_FIXA_LINEAR_MENU
 
-#include "estrutura.h"
+#include <estruturas/fila_dinamica_linear_fixa/estrutura.h>
 
 /* essa função exibe a fila fixa, o parametro de modificadores altera o modo
    de exibição da fila, ele utiliza mascara de bits para selecionar os valores.

@@ -1,8 +1,9 @@
 /* -*- coding: utf-8 -*- */
 /* Encoding: UTF-8 */
 /* META-DADOS DO ARQUIVO DE CÓDIGO, NÃO MODIFICAR POR FAVOR */
-#include "estruturas/pilha_dinamica_linear_fixa/menu.h"
-#include "estruturas/pilha_dinamica_linear_fixa/estrutura.h"
+#include <estruturas/pilha_dinamica_linear_fixa/menu.h>
+#include <estruturas/pilha_dinamica_linear_fixa/estrutura.h>
+#include <internal/cli.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -82,14 +83,31 @@ void exibir_pilha_fixa(pilha_linear_fixa_t *pilha_ptr,
             printf("/----------------------------------------------------------"
                    "--------------------\\\n");
             if (exibir_todos_enderecos || exibir_enderecos) {
-                printf("|%-18s|", " INDICE");
-                printf("%-41s|", " VALOR");
-                printf("%18s|", "ENDEREÇO ");
+                printf("|");
+                tc_set_color(LIGHT_GREEN, DARK_BLACK);
+                printf("%-18s", " INDICE");
+                tc_reset_color();
+                printf("|");
+                tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                printf("%-41s", " VALOR");
+                tc_reset_color();
+                printf("|");
+                tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                printf("%18s", "ENDEREÇO ");
+                tc_reset_color();
+                printf("|");
                 printf("\n|------------------+---------------------------------"
                        "--------+-----------------|\n");
             } else {
-                printf("|%-38s|", " INDICE");
-                printf("%39s|", "VALOR ");
+                printf("|");
+                tc_set_color(LIGHT_GREEN, DARK_BLACK);
+                printf("%-38s", " INDICE");
+                tc_reset_color();
+                printf("|");
+                tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                printf("%39s", "VALOR ");
+                tc_reset_color();
+                printf("|");
                 printf("\n|--------------------------------------+-------------"
                        "--------------------------|\n");
             }
@@ -98,11 +116,29 @@ void exibir_pilha_fixa(pilha_linear_fixa_t *pilha_ptr,
                 /* Exibe cada elemento como uma linha da tabela. */
                 for (i = pilha_ptr->capacidade; i > 0; i--) {
                     if (exibir_todos_enderecos || exibir_enderecos) {
-                        printf(SHOW_STRING0, i - 1, pilha_ptr->dados_ptr[i - 1]);
-                        printf("| %15p |", (void *)&pilha_ptr->dados_ptr[i - 1]);
+                        printf("| ");
+                        tc_set_color(LIGHT_GREEN, DARK_BLACK);
+                        printf(SHOW_STRING0A, i - 1);
+                        tc_reset_color();
+                        printf(" | ");
+                        tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                        printf(SHOW_STRING0B, pilha_ptr->dados_ptr[i - 1]);
+                        tc_reset_color();
+                        printf(" | ");
+                        tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                        printf("%15p", (void *)&pilha_ptr->dados_ptr[i - 1]);
+                        tc_reset_color();
+                        printf(" |");
                     } else {
-                        printf(SHOW_STRING1, i - 1, pilha_ptr->dados_ptr[i - 1]);
-                        printf("|");
+                        printf("| ");
+                        tc_set_color(LIGHT_GREEN, DARK_BLACK);
+                        printf(SHOW_STRING1A, i - 1);
+                        tc_reset_color();
+                        printf(" | ");
+                        tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                        printf(SHOW_STRING1B, pilha_ptr->dados_ptr[i - 1]);
+                        tc_reset_color();
+                        printf(" |");
                     }
                     printf("\n");
                 }
@@ -110,11 +146,29 @@ void exibir_pilha_fixa(pilha_linear_fixa_t *pilha_ptr,
                 /* Exibe cada elemento como uma linha da tabela. */
                 for (i = pilha_ptr->topo; i > 0; i--) {
                     if (exibir_todos_enderecos || exibir_enderecos) {
-                        printf(SHOW_STRING0, i - 1, pilha_ptr->dados_ptr[i - 1]);
-                        printf("| %15p |", (void *)&pilha_ptr->dados_ptr[i - 1]);
+                        printf("| ");
+                        tc_set_color(LIGHT_GREEN, DARK_BLACK);
+                        printf(SHOW_STRING0A, i - 1);
+                        tc_reset_color();
+                        printf(" | ");
+                        tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                        printf(SHOW_STRING0B, pilha_ptr->dados_ptr[i - 1]);
+                        tc_reset_color();
+                        printf(" | ");
+                        tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                        printf("%15p", (void *)&pilha_ptr->dados_ptr[i - 1]);
+                        tc_reset_color();
+                        printf(" |");
                     } else {
-                        printf(SHOW_STRING1, i - 1, pilha_ptr->dados_ptr[i - 1]);
-                        printf("|");
+                        printf("| ");
+                        tc_set_color(LIGHT_GREEN, DARK_BLACK);
+                        printf(SHOW_STRING1A, i - 1);
+                        tc_reset_color();
+                        printf(" | ");
+                        tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                        printf(SHOW_STRING1B, pilha_ptr->dados_ptr[i - 1]);
+                        tc_reset_color();
+                        printf(" |");
                     }
                     printf("\n");
                 }
@@ -126,12 +180,23 @@ void exibir_pilha_fixa(pilha_linear_fixa_t *pilha_ptr,
             printf("/----------------------------------------------------------"
                    "--------------------\\\n");
             if (exibir_todos_enderecos || exibir_enderecos) {
-                printf("|%-38s|", " VALOR");
-                printf("%40s|", "ENDEREÇO ");
+                printf("|");
+                tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                printf("%-38s", " VALOR");
+                tc_reset_color();
+                printf("|");
+                tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                printf("%40s", "ENDEREÇO ");
+                printf("|");
+                tc_reset_color();
                 printf("\n|--------------------------------------+-------------"
                        "--------------------------|\n");
             } else {
-                printf("|%-78s|", " VALOR");
+                printf("|");
+                tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                printf("%-78s", " VALOR");
+                tc_reset_color();
+                printf("|");
                 printf("\n|----------------------------------------------------"
                        "--------------------------|\n");
             }
@@ -140,22 +205,42 @@ void exibir_pilha_fixa(pilha_linear_fixa_t *pilha_ptr,
             if (exibir_todos_os_valores) {
                 for (i = pilha_ptr->capacidade; i > 0; i--) {
                     if (exibir_todos_enderecos || exibir_enderecos) {
+                        printf("| ");
+                        tc_set_color(LIGHT_WHITE, DARK_BLACK);
                         printf(SHOW_STRING2, pilha_ptr->dados_ptr[i - 1]);
-                        printf("| %37p |", (void *)&pilha_ptr->dados_ptr[i - 1]);
+                        tc_reset_color();
+                        printf(" | ");
+                        tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                        printf("%37p", (void *)&pilha_ptr->dados_ptr[i - 1]);
+                        tc_reset_color();
+                        printf(" |");
                     } else {
+                        printf("| ");
+                        tc_set_color(LIGHT_BLUE, DARK_BLACK);
                         printf(SHOW_STRING3, pilha_ptr->dados_ptr[i - 1]);
-                        printf("|");
+                        tc_reset_color();
+                        printf(" |");
                     }
                     printf("\n");
                 }
             } else {
                 for (i = pilha_ptr->topo; i > 0; i--) {
                     if (exibir_todos_enderecos || exibir_enderecos) {
+                        printf("| ");
+                        tc_set_color(LIGHT_WHITE, DARK_BLACK);
                         printf(SHOW_STRING2, pilha_ptr->dados_ptr[i - 1]);
-                        printf("| %37p |", (void *)&pilha_ptr->dados_ptr[i - 1]);
+                        tc_reset_color();
+                        printf(" | ");
+                        tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                        printf("%37p", (void *)&pilha_ptr->dados_ptr[i - 1]);
+                        tc_reset_color();
+                        printf(" |");
                     } else {
+                        printf("| ");
+                        tc_set_color(LIGHT_BLUE, DARK_BLACK);
                         printf(SHOW_STRING3, pilha_ptr->dados_ptr[i - 1]);
-                        printf("|");
+                        tc_reset_color();
+                        printf(" |");
                     }
                     printf("\n");
                 }
@@ -166,11 +251,16 @@ void exibir_pilha_fixa(pilha_linear_fixa_t *pilha_ptr,
     } else {
         if (exibir_todos_os_valores) {
             for (i = pilha_ptr->topo; i > 0; i--) {
+                tc_set_color(LIGHT_WHITE, DARK_BLACK);
                 printf(SHOW_STRING4, pilha_ptr->dados_ptr[i - 1]);
+                tc_reset_color();
 
                 /* Exibe o endereço se configurado. */
                 if (exibir_enderecos) {
-                    printf(" (%p)\n", (void *)&pilha_ptr->dados_ptr[i - 1]);
+                    tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                    printf(" (%p)", (void *)&pilha_ptr->dados_ptr[i - 1]);
+                    tc_reset_color();
+                    printf("\n");
                 } else {
                     /* Exibe o conector entre elementos. */
                     if (i != (pilha_ptr->capacidade - 1)) {
@@ -182,11 +272,16 @@ void exibir_pilha_fixa(pilha_linear_fixa_t *pilha_ptr,
         } else {
             /* Exibe em formato de pilha (com separador configurável). */
             for (i = pilha_ptr->capacidade; i > 0; i--) {
+                tc_set_color(LIGHT_WHITE, DARK_BLACK);
                 printf(SHOW_STRING4, pilha_ptr->dados_ptr[i - 1]);
+                tc_reset_color();
 
                 /* Exibe o endereço se configurado. */
                 if (exibir_enderecos) {
-                    printf(" (%p)\n", (void *)&pilha_ptr->dados_ptr[i - 1]);
+                    tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                    printf(" (%p)", (void *)&pilha_ptr->dados_ptr[i - 1]);
+                    tc_reset_color();
+                    printf("\n");
                 } else {
                     /* Exibe o conector entre elementos. */
                     if (i != pilha_ptr->topo - 1) {

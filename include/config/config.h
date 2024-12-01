@@ -1,3 +1,6 @@
+/* -*- coding: utf-8 -*- */
+/* Encoding: UTF-8 */
+/* META-DADOS DO ARQUIVO DE CÓDIGO, NÃO MODIFICAR POR FAVOR */
 /*******************************************************************************
  * Esse é um arquivo de cabeçalho em C, ele é usado para definir e exportar
  * funções e macros para outros arquivos.
@@ -14,6 +17,13 @@
  * valor diferente para NULL */
 #ifndef NULL
 #define NULL ((void *)0)
+#endif
+
+/* Esse macro permite o uso de cores no terminal, colorizando todas as saidas
+ * 1 significa SIM, 0 significa NÃO; qualquer valor diferente pode ter 
+ * comportamento inesperado */
+#ifndef _USE_COLOR
+#define _USE_COLOR 0
 #endif
 
 /* Esse código é usado nas diretrizes de pré-processador para dinamicamente

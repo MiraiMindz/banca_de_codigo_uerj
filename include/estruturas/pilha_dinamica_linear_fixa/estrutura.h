@@ -25,7 +25,7 @@
 #ifndef ESTRUTURAS_PILHA_FIXA_LINEAR_ESTRUTURA
 #define ESTRUTURAS_PILHA_FIXA_LINEAR_ESTRUTURA
 
-#include "macros.h"
+#include <estruturas/pilha_dinamica_linear_fixa/macros.h>
 
 /* Uma struct que representa uma pilha linear de alocação dinamica e tamanho fixo
  * a ordem dos campos tem ligeira importancia, pois permite com que otimizemos 

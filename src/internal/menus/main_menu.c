@@ -2,22 +2,22 @@
 /* Encoding: UTF-8 */
 /* META-DADOS DO ARQUIVO DE CÓDIGO, NÃO MODIFICAR POR FAVOR */
 
-#include "estruturas/fila_dinamica_linear_fixa/menu.h"
-#include "estruturas/pilha_dinamica_linear_fixa/menu.h"
-#include "internal/cli.h"
-#include "internal/menus.h"
+#include <estruturas/fila_dinamica_linear_fixa/menu.h>
+#include <estruturas/pilha_dinamica_linear_fixa/menu.h>
+#include <internal/cli.h>
+#include <internal/menus.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 
 void main_menu(void) {
     unsigned char escolha_global = 0;
+    #ifdef _WIN32
+            system("cls");
+    #else
+            system("clear");
+    #endif
     do {
-#ifdef _WIN32
-        system("cls");
-#else
-        system("clear");
-#endif
         /* Sim um comentário no meio do código, olha... eu SEI que isso está
          * consideravelmente ilegível, mas eu tenho boas justificativas, eu juro
          *
@@ -54,7 +54,13 @@ void main_menu(void) {
          *
          * Eu precisava fazer isso? Não.
          * Eu queria e podia? Sim.
+         *
+         * TALVEZ após eu analisar o uso dessa colorização, se eu perceber um
+         * padrão, eu abstraio para uma função utilitaria para facilitar a
+         * leitura do código, mas por ora, é manual mesmo.
          **/
+
+        /*
         tc_set_color(DARK_WHITE, RESET);
         printf("/--------------------------------------------------------------"
                "----------------\\\n");
@@ -122,31 +128,54 @@ void main_menu(void) {
         printf("|%78s|\n", "");
         printf("\\-------------------------------------------------------------"
                "-----------------/\n\n");
-               
-        printf("[");
-        tc_set_color(LIGHT_WHITE, RESET);
-        printf("1\n");
-        printf("] - Ementa interativa\n");
-        printf("[");
-        tc_set_color(LIGHT_WHITE, RESET);
-        printf("2");
-        printf("] - Fila linear de tamanho fixo\n");
-        printf("[");
-        tc_set_color(LIGHT_WHITE, RESET);
-        printf("3");
-        printf("] - Pilha linear de tamanho fixo\n");
-        printf("[");
-        tc_set_color(LIGHT_WHITE, RESET);
-        printf("9");
-        printf("] - Ajuda\n");
-        printf("[");
-        tc_set_color(LIGHT_WHITE, RESET);
-        printf("0");
-        printf("] - Sair\n\n");
+        */
+
+        print_interface_header();
+        print_interface_line(
+            "Banco de Código da Universidade do Estado do Rio de Janeiro",
+            CENTER, LIGHT_WHITE, DARK_BLACK);
+        print_interface_padder();
+        print_interface_line("Este programa tem o objetivo auxiliar na "
+                             "compreensão de estruturas de dado",
+                             LEFT, LIGHT_WHITE, DARK_BLACK);
+        print_interface_line("usando a linguagem C (padrão ANSI X3.159-1989) "
+                             "de programação, quaisquer",
+                             LEFT, LIGHT_WHITE, DARK_BLACK);
+        print_interface_line("dúvidas contate o professor ou mande um email ou "
+                             "mensagem para o contato ao",
+                             LEFT, LIGHT_WHITE, DARK_BLACK);
+        print_interface_line("final, desta tela.", LEFT, LIGHT_WHITE,
+                             DARK_BLACK);
+        print_interface_padder();
+        print_interface_line("Este programa é de código aberto e livre "
+                             "dísponivel no seguinte endereço web",
+                             CENTER, LIGHT_WHITE, DARK_BLACK);
+        print_interface_line(
+            "<https://github.com/MiraiMindz/banca_de_codigo_uerj>", CENTER,
+            LIGHT_BLUE, DARK_BLACK);
+        print_interface_padder();
+        print_interface_divider();
+        print_interface_padder();
+        print_interface_line("Escrito por Bruno C. Barreto (vulgo Mirai)", LEFT,
+                             LIGHT_WHITE, DARK_BLACK);
+        print_interface_line("- Email de Contato: barreto2contato@gmail.com",
+                             LEFT, LIGHT_WHITE, DARK_BLACK);
+        print_interface_line(
+            "- Telefone Celular de Contato: +55 (21) 97157-0580", LEFT,
+            LIGHT_WHITE, DARK_BLACK);
+        print_interface_padder();
+        print_interface_footer();
+
+        print_interface_option(1, "Ementa interativa");
+        print_interface_option(2, "Fila linear de tamanho fixo");
+        print_interface_option(3, "Pilha linear de tamanho fixo");
+        print_interface_option(4, "Ajuda");
+        print_interface_option(0, "Sair");
+        printf("\n");
 
         printf("Digite os numeros entre [");
         tc_set_color(LIGHT_WHITE, RESET);
-        printf("colchetes"); 
+        printf("colchetes");
         tc_reset_color();
         printf("] para se movimentar na aplicação e pressione\n");
         printf("ENTER para enviar sua resposta.\n\n");
@@ -175,7 +204,13 @@ void main_menu(void) {
 #else
             system("clear");
 #endif
-            printf("Digite os numeros entre [colchetes] para se movimentar na aplicação e pressione ENTER para enviar sua resposta.\n");
+
+            printf("Digite os numeros entre [");
+            tc_set_color(LIGHT_WHITE, RESET);
+            printf("colchetes");
+            tc_reset_color();
+            printf("] para se movimentar na aplicação e pressione\n");
+            printf("ENTER para enviar sua resposta.\n\n");
         case 0:
             tc_set_color(LIGHT_WHITE, RESET);
             printf("Saindo...\n");
@@ -187,7 +222,9 @@ void main_menu(void) {
 #else
             system("clear");
 #endif
+            tc_set_color(LIGHT_RED, RESET);
             printf("Opção Invalida, favor tentar novamente.\n\n");
+            tc_reset_color();
             break;
         }
     } while (escolha_global != 0);
