@@ -26,6 +26,51 @@
 #define _USAR_COR_NO_TERMINAL 1
 #endif
 
+/* Os dois macros controlam a exibição da função less para exibição de páginas
+ * de texto dinamicas, por favor lembre-se de usar um numero para a altura
+ * MENOR do que a quantidades de linha no seu terminal, você pode ver essa
+ * informação usando os seguintes comandos:
+ * CMD:
+ *      mode
+ * PowerShell:
+ *      "Linhas: $($Host.UI.RawUI.WindowSize.Height)"
+ *      "Colunas: $($Host.UI.RawUI.WindowSize.Width)"
+ * Linux (qualquer shell POSIX):
+ *      tput cols lines
+ * */
+#ifndef _CLI_LESS_ALTURA_DA_PAGINA
+#define _CLI_LESS_ALTURA_DA_PAGINA 24  /* numero de linhas na tela */
+#endif
+
+#ifndef _CLI_LESS_LARGURA_DA_PAGINA
+#define _CLI_LESS_LARGURA_DA_PAGINA 80    /* largura da linha */
+#endif
+
+/* Esses dois macros controlam a largura e a altura da interface gráfica,
+ * Ajuste para adequar ao seu monitor, a resolução padrão é 960x720 (4:3)
+ * para funcionar em projetores, porém a janela é re-ajustavél. */
+#ifndef _INTERFACE_GRAFICA_LARGURA
+#define _INTERFACE_GRAFICA_LARGURA 960
+#endif
+
+#ifndef _INTERFACE_GRAFICA_ALTURA
+#define _INTERFACE_GRAFICA_ALTURA 720
+#endif
+
+/* Use multiplos de 8, o tamanho base da fonte é 16 então estamos escalando a
+ * fonte 1.5x para a resolução de 960x720, abaixo disso por favor usar 16 ou
+ * menos, e acima disso favor escalar a fonte proporcionalemente */
+#ifndef _INTERFACE_GRAFICA_TAMANHO_FONTE
+#define _INTERFACE_GRAFICA_TAMANHO_FONTE 24
+#endif
+
+/* Esse macro controla a taxa de quadros por segundo da interface grafica, o
+ * padrão é 30, mas sinta-se a vontade para definir para 60 ou valores maiores
+ * dependendo do seu monitor */
+#ifndef _INTERFACE_GRAFICA_QUADROS_POR_SEGUNDO
+#define _INTERFACE_GRAFICA_QUADROS_POR_SEGUNDO 30
+#endif
+
 /* Esse código é usado nas diretrizes de pré-processador para dinamicamente
    adaptar o código da fila linear fixa para o tipo de dado selecionado (Em C 
    não conseguimos fazer comparação de textos em macros, somente números) a 

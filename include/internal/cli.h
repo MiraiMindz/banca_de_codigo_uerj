@@ -7,39 +7,42 @@
 #include <stdarg.h>
 #include <config/config.h>
 
-typedef enum cli_colors_e {
-    RESET,
-    LIGHT_BLACK,
-    LIGHT_RED,
-    LIGHT_GREEN,
-    LIGHT_YELLOW,
-    LIGHT_BLUE,
-    LIGHT_MAGENTA,
-    LIGHT_CYAN,
-    LIGHT_WHITE,
-    DARK_BLACK,
-    DARK_RED,
-    DARK_GREEN,
-    DARK_YELLOW,
-    DARK_BLUE,
-    DARK_MAGENTA,
-    DARK_CYAN,
-    DARK_WHITE
-} cli_colors_t;
+typedef enum cores_terminal_e {
+    PADRAO,
+    PRETO_CLARO,
+    VERMELHO_CLARO,
+    VERDE_CLARO,
+    AMARELO_CLARO,
+    AZUL_CLARO,
+    MAGENTA_CLARO,
+    CIANO_CLARO,
+    BRANCO_CLARO,
+    PRETO_ESCURO,
+    VERMELHO_ESCURO,
+    VERDE_ESCURO,
+    AMARELO_ESCURO,
+    AZUL_ESCURO,
+    MAGENTA_ESCURO,
+    CIANO_ESCURO,
+    BRANCO_ESCURO
+} cores_terminal_t;
 
-typedef enum format_alignment_e {
-    LEFT,
-    CENTER,
-    RIGHT
-} format_alignment_t;
+typedef enum alinhamento_textual_e {
+    ESQUERDA,
+    CENTRO,
+    DIREITA
+} alinhamento_textual_t;
 
-void tc_set_color(cli_colors_t foreground, cli_colors_t background);
-void tc_reset_color(void);
-void print_interface_header(void);
-void print_interface_footer(void);
-void print_interface_divider(void);
-void print_interface_padder(void);
-void print_interface_line(char *format, format_alignment_t alignment, cli_colors_t fg_color, cli_colors_t bg_color, ...);
-void print_interface_option(unsigned long number, char* option_name);
+void cli_definir_cores(cores_terminal_t cor_texto, cores_terminal_t cor_fundo);
+void cli_redefinir_cores(void);
+void exibir_linha_topo_interface(void);
+void exibir_linha_inferior_interface(void);
+void exibir_divisor_interface(void);
+void exibir_espacador_interface(void);
+void exibir_linha_textual_interface(char *formato, alinhamento_textual_t alinhamento, cores_terminal_t cor_texto, cores_terminal_t cor_fundo, ...);
+void exibir_opcao_interface(unsigned long numero, char* opcao);
+void paginador(char *texto);
+void exibir_opcao_configurar_display(unsigned long numero, char *opcao, char* descricao, unsigned char condicional);
+void processador_markdown(char* texto);
 
 #endif /* INTERNAL_CLI_H */

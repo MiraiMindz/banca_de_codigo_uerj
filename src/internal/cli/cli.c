@@ -1,73 +1,79 @@
 /* -*- coding: utf-8 -*- */
 /* Encoding: UTF-8 */
 /* META-DADOS DO ARQUIVO DE CÓDIGO, NÃO MODIFICAR POR FAVOR */
+#include "config/config.h"
 #include <internal/cli.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#ifdef _WIN32
-#include <malloc.h>
-#else
-#include <alloca.h>
-#endif
 
 #ifdef _WIN32
+#include <malloc.h>
 #include <windows.h>
+#define limpar_tela() system("cls")
+#else
+#include <alloca.h>
+#define limpar_tela() system("clear")
+#endif
+
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+
+#ifdef _WIN32
 
 /* Windows-specific color values */
 static const int win_colors[] = {
-    0, /* RESET (not used in Windows API) */
-    0, /* LIGHT_BLACK (not directly supported, map to BLACK) */
-    FOREGROUND_RED | FOREGROUND_INTENSITY,                     /* LIGHT_RED */
-    FOREGROUND_GREEN | FOREGROUND_INTENSITY,                   /* LIGHT_GREEN */
-    FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY,  /* LIGHT_YELLOW */
-    FOREGROUND_BLUE | FOREGROUND_INTENSITY,                    /* LIGHT_BLUE */
-    FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY,   /* LIGHT_MAGENTA */
+    0, /* RESET (Não usado pela API do Windows) */
+    0, /* PRETO_CLARO não existe na API do Windows, usamos PRETO_ESCURO */
+    FOREGROUND_RED | FOREGROUND_INTENSITY,                    /* LIGHT_RED */
+    FOREGROUND_GREEN | FOREGROUND_INTENSITY,                  /* LIGHT_GREEN */
+    FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY, /* LIGHT_YELLOW */
+    FOREGROUND_BLUE | FOREGROUND_INTENSITY,                   /* LIGHT_BLUE */
+    FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY, /* LIGHT_MAGENTA */
     FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY, /* LIGHT_CYAN */
     FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE |
-        FOREGROUND_INTENSITY,           /* LIGHT_WHITE */
-    0,                                  /* DARK_BLACK (map to BLACK) */
-    FOREGROUND_RED,                     /* DARK_RED */
-    FOREGROUND_GREEN,                   /* DARK_GREEN */
-    FOREGROUND_RED | FOREGROUND_GREEN,  /* DARK_YELLOW */
-    FOREGROUND_BLUE,                    /* DARK_BLUE */
-    FOREGROUND_RED | FOREGROUND_BLUE,   /* DARK_MAGENTA */
-    FOREGROUND_GREEN | FOREGROUND_BLUE, /* DARK_CYAN */
-    FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE /* DARK_WHITE */
+        FOREGROUND_INTENSITY,                           /* BRANCO_CLARO */
+    0,                                                  /* PRETO_ESCURO */
+    FOREGROUND_RED,                                     /* DARK_RED */
+    FOREGROUND_GREEN,                                   /* DARK_GREEN */
+    FOREGROUND_RED | FOREGROUND_GREEN,                  /* DARK_YELLOW */
+    FOREGROUND_BLUE,                                    /* DARK_BLUE */
+    FOREGROUND_RED | FOREGROUND_BLUE,                   /* DARK_MAGENTA */
+    FOREGROUND_GREEN | FOREGROUND_BLUE,                 /* DARK_CYAN */
+    FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE /* BRANCO_ESCURO */
 };
 
 #if _USAR_COR_NO_TERMINAL == 1
-void tc_set_color(cli_colors_t foreground, cli_colors_t background) {
+void cli_definir_cores(cores_terminal_t cor_texto, cores_terminal_t cor_fundo) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     int color_attr = 0;
 
-    /* Map foreground */
-    if (foreground >= LIGHT_BLACK && foreground <= DARK_WHITE) {
-        color_attr |= win_colors[foreground];
+    /* Map cor_texto */
+    if (cor_texto >= PRETO_CLARO && cor_texto <= BRANCO_ESCURO) {
+        color_attr |= win_colors[cor_texto];
     }
 
-    /* Map background (shifted 4 bits for Windows attributes) */
-    if (background >= LIGHT_BLACK && background <= DARK_WHITE) {
-        color_attr |= (win_colors[background] << 4);
+    /* Map cor_fundo (shifted 4 bits for Windows attributes) */
+    if (cor_fundo >= PRETO_CLARO && cor_fundo <= BRANCO_ESCURO) {
+        color_attr |= (win_colors[cor_fundo] << 4);
     }
 
     SetConsoleTextAttribute(hConsole, color_attr);
 }
 
-void tc_reset_color() {
+void cli_redefinir_cores() {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN |
                                           FOREGROUND_BLUE);
 }
 #else
-void tc_set_color(cli_colors_t foreground, cli_colors_t background) {
-    (void)foreground;
-    (void)background;
+void cli_definir_cores(cores_terminal_t cor_texto, cores_terminal_t cor_fundo) {
+    (void)cor_texto;
+    (void)cor_fundo;
     /* No-op when colors are disabled */
 }
 
-void tc_reset_color() {
+void cli_redefinir_cores() {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN |
                                           FOREGROUND_BLUE);
@@ -75,183 +81,354 @@ void tc_reset_color() {
 #endif
 
 #else
-/* Unix-like systems */
-#include <stdio.h>
 
 #if _USAR_COR_NO_TERMINAL == 1
-void tc_set_color(cli_colors_t foreground, cli_colors_t background) {
-    if (foreground >= LIGHT_BLACK && foreground <= DARK_WHITE) {
-        int ansi_fg = (foreground >= DARK_BLACK)
-                          ? (30 + (foreground - DARK_BLACK))
-                          : (90 + (foreground - LIGHT_BLACK));
-        printf("\033[%dm", ansi_fg); /* Foreground */
+void cli_definir_cores(cores_terminal_t cor_texto, cores_terminal_t cor_fundo) {
+    if (cor_texto >= PRETO_CLARO && cor_texto <= BRANCO_ESCURO) {
+        int ansi_fg = (cor_texto >= PRETO_ESCURO)
+                          ? (30 + (cor_texto - PRETO_ESCURO))
+                          : (90 + (cor_texto - PRETO_CLARO));
+        printf("\033[%dm", ansi_fg); /* cor_texto */
     }
-    if (background >= LIGHT_BLACK && background <= DARK_WHITE) {
-        int ansi_bg = (background >= DARK_BLACK)
-                          ? (40 + (background - DARK_BLACK))
-                          : (100 + (background - LIGHT_BLACK));
-        printf("\033[%dm", ansi_bg); /* Background */
+    if (cor_fundo >= PRETO_CLARO && cor_fundo <= BRANCO_ESCURO) {
+        int ansi_bg = (cor_fundo >= PRETO_ESCURO)
+                          ? (40 + (cor_fundo - PRETO_ESCURO))
+                          : (100 + (cor_fundo - PRETO_CLARO));
+        printf("\033[%dm", ansi_bg); /* cor_fundo */
     }
 }
 
-void tc_reset_color(void) { printf("\033[0m"); }
+void cli_redefinir_cores(void) { printf("\033[0m"); }
 #else
-void tc_set_color(cli_colors_t foreground, cli_colors_t background) {
-    (void)foreground;
-    (void)background;
+void cli_definir_cores(cores_terminal_t cor_texto, cores_terminal_t cor_fundo) {
+    (void)cor_texto;
+    (void)cor_fundo;
     /* No-op when colors are disabled */
 }
 
-void tc_reset_color(void) { printf("\033[0m"); }
+void cli_redefinir_cores(void) { printf("\033[0m"); }
 #endif
 #endif
 
-
-void print_interface_header(void) {
+void exibir_linha_topo_interface(void) {
     printf("/--------------------------------------------------------------"
            "----------------\\\n");
 }
 
-void print_interface_footer(void) {
+void exibir_linha_inferior_interface(void) {
     printf("\\-------------------------------------------------------------"
            "-----------------/\n\n");
 }
 
-void print_interface_divider(void) {
+void exibir_divisor_interface(void) {
     printf("|--------------------------------------------------------------"
            "----------------|\n");
 }
 
-void print_interface_padder(void) { printf("|%78s|\n", ""); }
+void exibir_espacador_interface(void) { printf("|%78s|\n", ""); }
 
-unsigned long count_utf8_characters(const char *str) {
-    unsigned long count;
-    count = 0;
+static unsigned long contar_caracteres_utf8(const char *texto) {
+    unsigned long quantidade;
+    quantidade = 0;
 
-    while (*str) {
-        /* If the first byte has a value in the range 0x00-0x7F, it's a 1-byte
-         * character (ASCII). */
-        if ((*str & 0x80) == 0) {
-            str++;
+    while (*texto) {
+        /* Se o primeiro byte estiver no intervalo 0x00-0x7F, é um caractere de
+         * 1 byte (ASCII). */
+        if ((*texto & 0x80) == 0) {
+            texto++;
         }
-        /* If the first byte has a value in the range 0xC0-0xDF, it's a 2-byte
-           character. */
-        else if ((*str & 0xE0) == 0xC0) {
-            str += 2;
+        /* Se o primeiro byte estiver no intervalo 0xC0-0xDF, é um caractere de
+           2 bytes. */
+        else if ((*texto & 0xE0) == 0xC0) {
+            texto += 2;
         }
-        /* If the first byte has a value in the range 0xE0-0xEF, it's a 3-byte
-           character. */
-        else if ((*str & 0xF0) == 0xE0) {
-            str += 3;
+        /* Se o primeiro byte estiver no intervalo 0xE0-0xEF, é um caractere de
+           3 bytes. */
+        else if ((*texto & 0xF0) == 0xE0) {
+            texto += 3;
         }
-        /* If the first byte has a value in the range 0xF0-0xFF, it's a 4-byte
-           character. */
-        else if ((*str & 0xF8) == 0xF0) {
-            str += 4;
+        /* Se o primeiro byte estiver no intervalo 0xF0-0xFF, é um caractere de
+           4 bytes. */
+        else if ((*texto & 0xF8) == 0xF0) {
+            texto += 4;
         }
-        count++;
+        quantidade++;
     }
 
-    return count;
+    return quantidade;
 }
 
-char *strprintf(const char *format, va_list va) {
-    int length;
-    char *result;
-    result = calloc(255, sizeof(char));
-    length = vsprintf(result, format, va);
+char *printf_para_string(const char *formato, va_list lista_de_argumentos) {
+    int tamanho;
+    char *resultado;
+    resultado = calloc(255, sizeof(char));
+    tamanho = vsprintf(resultado, formato, lista_de_argumentos);
 
-    if (length < 0) {
-        free(result);
+    if (tamanho < 0) {
+        free(resultado);
         return NULL;
     }
 
-    result = realloc(result, length + 1);
-    if (result == NULL) {
-        free(result);
+    resultado = realloc(resultado, tamanho + 1);
+    if (resultado == NULL) {
+        free(resultado);
         return NULL;
     }
 
-    vsprintf(result, format, va);
-    return result;
+    vsprintf(resultado, formato, lista_de_argumentos);
+    return resultado;
 }
 
-void print_interface_line(char *format, format_alignment_t alignment,
-                          cli_colors_t fg_color, cli_colors_t bg_color, ...) {
-    va_list va;
-    unsigned long string_width;
-    unsigned long padding_total;
+void exibir_linha_textual_interface(char *formato,
+                                    alinhamento_textual_t alinhamento,
+                                    cores_terminal_t cor_texto,
+                                    cores_terminal_t cor_fundo, ...) {
+    va_list lista_de_argumentos;
+    unsigned long largura_do_texto;
+    unsigned long espacamento_total;
     unsigned long i;
-    char *string;
-    va_start(va, bg_color);
+    char *texto;
+    va_start(lista_de_argumentos, cor_fundo);
 
-    padding_total = 0;
-    string = strprintf(format, va);
-    string_width = count_utf8_characters(string);
+    espacamento_total = 0;
+    texto = printf_para_string(formato, lista_de_argumentos);
+    largura_do_texto = contar_caracteres_utf8(texto);
 
     printf("| ");
-    if (string_width <= 74) {
-        padding_total = (74 - string_width) + 1;
-        switch (alignment) {
-        case LEFT:
-            tc_set_color(fg_color, bg_color);
-            printf("%s", string);
-            for (i = 0; i <= padding_total; i++) {
+    if (largura_do_texto <= 74) {
+        espacamento_total = (74 - largura_do_texto) + 1;
+        switch (alinhamento) {
+        case ESQUERDA:
+            cli_definir_cores(cor_texto, cor_fundo);
+            printf("%s", texto);
+            for (i = 0; i <= espacamento_total; i++) {
                 putchar(' ');
             }
-            tc_reset_color();
+            cli_redefinir_cores();
             break;
-        case CENTER:
-            tc_set_color(fg_color, bg_color);
-            if ((string_width % 2) == 0) {
-                for (i = 0; i <= (padding_total / 2); i++) {
+        case CENTRO:
+            cli_definir_cores(cor_texto, cor_fundo);
+            if ((largura_do_texto % 2) == 0) {
+                for (i = 0; i <= (espacamento_total / 2); i++) {
                     putchar(' ');
                 }
-                printf("%s", string);
-                for (i = 0; i <= (padding_total / 2); i++) {
+                printf("%s", texto);
+                for (i = 0; i <= (espacamento_total / 2); i++) {
                     putchar(' ');
                 }
             } else {
-                for (i = 0; i <= ((padding_total / 2) - 1); i++) {
+                for (i = 0; i <= ((espacamento_total / 2) - 1); i++) {
                     putchar(' ');
                 }
-                printf("%s", string);
-                for (i = 0; i <= (padding_total / 2); i++) {
+                printf("%s", texto);
+                for (i = 0; i <= (espacamento_total / 2); i++) {
                     putchar(' ');
                 }
             }
-            tc_reset_color();
+            cli_redefinir_cores();
             break;
-        case RIGHT:
-            tc_set_color(fg_color, bg_color);
-            for (i = 0; i <= padding_total; i++) {
+        case DIREITA:
+            cli_definir_cores(cor_texto, cor_fundo);
+            for (i = 0; i <= espacamento_total; i++) {
                 putchar(' ');
             }
-            printf("%s", string);
-            tc_reset_color();
+            printf("%s", texto);
+            cli_redefinir_cores();
             break;
         }
-    } else if ((string_width > 74) && string_width < 76) {
-        tc_set_color(fg_color, bg_color);
-        printf("%s ", string);
-        tc_reset_color();
+    } else if ((largura_do_texto > 74) && largura_do_texto < 76) {
+        cli_definir_cores(cor_texto, cor_fundo);
+        printf("%s ", texto);
+        cli_redefinir_cores();
     } else {
-        tc_set_color(fg_color, bg_color);
-        printf("%s", string);
-        tc_reset_color();
+        cli_definir_cores(cor_texto, cor_fundo);
+        printf("%s", texto);
+        cli_redefinir_cores();
     }
     printf(" |\n");
 
-
-    free(string);
-    tc_reset_color();
-    va_end(va);
+    free(texto);
+    cli_redefinir_cores();
+    va_end(lista_de_argumentos);
 }
 
-void print_interface_option(unsigned long number, char* option_name) {
+void exibir_opcao_interface(unsigned long numero, char *opcao) {
     printf("[");
-    tc_set_color(LIGHT_WHITE, DARK_BLACK);
-    printf("%lu", number);
-    tc_reset_color();
-    printf("] - %s\n", option_name);
+    cli_definir_cores(BRANCO_CLARO, PADRAO);
+    printf("%lu", numero);
+    cli_redefinir_cores();
+    printf("] - %s\n", opcao);
+}
+
+void exibir_opcao_configurar_display(unsigned long numero, char *opcao,
+                                     char *descricao,
+                                     unsigned char condicional) {
+    printf("\t(%d) - %s [", numero, opcao);
+    if (condicional != 0) {
+        cli_definir_cores(VERDE_CLARO, PADRAO);
+        printf("SELECIONADO");
+        cli_redefinir_cores();
+    } else {
+        cli_definir_cores(AZUL_CLARO, PADRAO);
+        printf("DISPONIVEL");
+        cli_redefinir_cores();
+    }
+    printf("]\n");
+    printf("\t\t%s\n", descricao);
+}
+
+char **dividir_texto(const char *texto, int largura, int *contagem_de_linhas) {
+    unsigned long tamanho_do_buffer;
+    char **resultado;
+    const char *inicio;
+    char *resultado_ptr;
+    const char *espaco_ptr;
+    int tamanho_atual;
+    unsigned long tamanho_usado;
+    int contagem_de_espacos;
+    int i;
+    const char *atual;
+    const char *fim;
+    unsigned long tamanho_da_linha;
+    char **novo_resultado;
+
+    tamanho_do_buffer = 256;
+    resultado = malloc(tamanho_do_buffer * sizeof(char *));
+    if (!resultado) {
+        return NULL;
+    }
+
+    inicio = texto;
+    resultado_ptr = NULL;
+    espaco_ptr = NULL;
+    tamanho_atual = 0;
+    tamanho_usado = 0;
+    contagem_de_espacos = 0;
+    *contagem_de_linhas = 0;
+
+    while (*inicio != '\0') {
+        atual = inicio;
+        tamanho_atual = 0;
+        espaco_ptr = NULL;
+        contagem_de_espacos = 0;
+
+        while (*atual != '\0' && tamanho_atual < largura) {
+            if (*atual == ' ') {
+                espaco_ptr = atual;
+                contagem_de_espacos++;
+            }
+            atual++;
+            tamanho_atual++;
+        }
+
+        if (contagem_de_espacos > 1) {
+            if (espaco_ptr != NULL && tamanho_atual <= largura) {
+                fim = espaco_ptr;
+                contagem_de_espacos = 0;
+            } else {
+                while (*atual != ' ' && *atual != '\0') {
+                    atual++;
+                }
+                fim = atual;
+            }
+        } else {
+            fim = atual;
+        }
+
+        tamanho_da_linha = fim - inicio + 1;
+        if (tamanho_usado + tamanho_da_linha >= tamanho_do_buffer) {
+            tamanho_do_buffer = (tamanho_usado + tamanho_da_linha) * 2;
+            novo_resultado =
+                realloc(resultado, tamanho_do_buffer * sizeof(char *));
+            if (!novo_resultado) {
+                free(resultado);
+                return NULL;
+            }
+            resultado = novo_resultado;
+        }
+
+        resultado[*contagem_de_linhas] = malloc(tamanho_da_linha + 1);
+        if (!resultado[*contagem_de_linhas]) {
+            for (i = 0; i < *contagem_de_linhas; i++) {
+                free(resultado[i]);
+            }
+            free(resultado);
+            return NULL;
+        }
+
+        resultado_ptr = resultado[*contagem_de_linhas];
+        while (inicio < fim) {
+            *resultado_ptr++ = *inicio++;
+        }
+
+        *resultado_ptr = '\0';
+        (*contagem_de_linhas)++;
+
+        while (*inicio == ' ') {
+            inicio++;
+        }
+    }
+
+    return resultado;
+}
+
+
+
+void paginador(char *texto) {
+    int altura_da_tela;
+    int largura_da_tela;
+    char opcao;
+    char **texto_divido;
+    int i;
+    int contagem_de_linhas;
+    int total_de_linhas;
+    int linha_atual;
+    int sair;
+
+    altura_da_tela = 24;
+    largura_da_tela = 80;
+    linha_atual = 0;
+    sair = 1;
+
+    texto_divido = dividir_texto(texto, largura_da_tela, &contagem_de_linhas);
+
+    while (sair == 1) {
+        limpar_tela();
+        total_de_linhas = linha_atual + altura_da_tela;
+        if (total_de_linhas > contagem_de_linhas) {
+            total_de_linhas = contagem_de_linhas;
+        }
+
+        for (i = linha_atual; i < total_de_linhas; i++) {
+            printf("%s\n", texto_divido[i]);
+        }
+
+        printf("\n--More-- (%d/%d lines)\n", total_de_linhas,
+               contagem_de_linhas);
+        opcao = getchar();
+
+        if (opcao == 'q') {
+            sair = 0;
+            break;
+        } else if (opcao == 'u') {
+            if (linha_atual > 0) {
+                linha_atual--;
+            }
+        } else if (opcao == 'd') {
+            if ((linha_atual < contagem_de_linhas - 1) &&
+                (total_de_linhas != contagem_de_linhas)) {
+                linha_atual++;
+            }
+        } else if (opcao == ' ') {
+            linha_atual += altura_da_tela;
+            if (linha_atual >= contagem_de_linhas) {
+                linha_atual = contagem_de_linhas - 1;
+            }
+        }
+    }
+
+    for (i = 0; i < contagem_de_linhas; i++) {
+        free(texto_divido[i]);
+    }
+    free(texto_divido);
 }

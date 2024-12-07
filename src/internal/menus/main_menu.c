@@ -5,18 +5,21 @@
 #include <estruturas/fila_dinamica_linear_fixa/menu.h>
 #include <estruturas/pilha_dinamica_linear_fixa/menu.h>
 #include <internal/cli.h>
+#include <internal/ementa_interativa/ementa_interativa.h>
 #include <internal/menus.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifdef _WIN32
+#define limpar_tela() system("cls")
+#else
+#define limpar_tela() system("clear")
+#endif
+
 void main_menu(void) {
     unsigned char escolha_global = 0;
-    #ifdef _WIN32
-            system("cls");
-    #else
-            system("clear");
-    #endif
+    limpar_tela();
     do {
         /* Sim um comentário no meio do código, olha... eu SEI que isso está
          * consideravelmente ilegível, mas eu tenho boas justificativas, eu juro
@@ -58,125 +61,58 @@ void main_menu(void) {
          * TALVEZ após eu analisar o uso dessa colorização, se eu perceber um
          * padrão, eu abstraio para uma função utilitaria para facilitar a
          * leitura do código, mas por ora, é manual mesmo.
+         *
+         * Bruno do futuro aqui, eu abstrai parte das repetições, mas alguns
+         * elementos ainda estão manualmente colorizados.
          **/
 
-        /*
-        tc_set_color(DARK_WHITE, RESET);
-        printf("/--------------------------------------------------------------"
-               "----------------\\\n");
-        tc_reset_color();
-        printf("|          ");
-        tc_set_color(LIGHT_WHITE, RESET);
-        printf("Banco de Código da Universidade do Estado do Rio de Janeiro");
-        tc_reset_color();
-        printf("         |\n");
-        printf("|%78s|\n", "");
-        printf("| ");
-        tc_set_color(LIGHT_WHITE, RESET);
-        printf("Este programa tem o objetivo auxiliar na compreensão de "
-               "estruturas de dado");
-        tc_reset_color();
-        printf("   |\n");
-        printf("| ");
-        tc_set_color(LIGHT_WHITE, RESET);
-        printf("usando a linguagem C (padrão ANSI X3.159-1989) de programação, "
-               "quaisquer");
-        tc_reset_color();
-        printf("     |\n");
-        printf("| ");
-        tc_set_color(LIGHT_WHITE, RESET);
-        printf("dúvidas contate o professor ou mande um email ou mensagem para "
-               "o contato ao");
-        tc_reset_color();
-        printf("  |\n");
-        printf("| ");
-        tc_set_color(LIGHT_WHITE, RESET);
-        printf("final, desta tela.");
-        tc_reset_color();
-        printf("%59s|\n", "");
-        printf("|%78s|\n", "");
-        printf("| ");
-        tc_set_color(LIGHT_WHITE, RESET);
-        printf("Este programa é de código aberto e livre dísponivel no "
-               "seguinte endereço web");
-        tc_reset_color();
-        printf(" |\n");
-        printf("|%13s", "");
-        tc_set_color(LIGHT_BLUE, RESET);
-        printf("<https://github.com/MiraiMindz/banca_de_codigo_uerj>");
-        tc_reset_color();
-        printf("%13s|\n", "");
-        printf("|%78s|\n", "");
-        printf("|--------------------------------------------------------------"
-               "----------------|\n");
-        printf("|%78s|\n", "");
-        printf("| ");
-        tc_set_color(LIGHT_WHITE, RESET);
-        printf("Escrito por Bruno C. Barreto (vulgo Mirai)");
-        tc_reset_color();
-        printf("%35s|\n", "");
-        printf("|   ");
-        tc_set_color(LIGHT_WHITE, RESET);
-        printf("- Email de Contato: barreto2contato@gmail.com");
-        tc_reset_color();
-        printf("%30s|\n", "");
-        printf("|   ");
-        tc_set_color(LIGHT_WHITE, RESET);
-        printf("- Telefone Celular de Contato: +55 (21) 97157-0580");
-        tc_reset_color();
-        printf("%25s|\n", "");
-        printf("|%78s|\n", "");
-        printf("\\-------------------------------------------------------------"
-               "-----------------/\n\n");
-        */
-
-        print_interface_header();
-        print_interface_line(
+        exibir_linha_topo_interface();
+        exibir_linha_textual_interface(
             "Banco de Código da Universidade do Estado do Rio de Janeiro",
-            CENTER, LIGHT_WHITE, DARK_BLACK);
-        print_interface_padder();
-        print_interface_line("Este programa tem o objetivo auxiliar na "
-                             "compreensão de estruturas de dado",
-                             LEFT, LIGHT_WHITE, DARK_BLACK);
-        print_interface_line("usando a linguagem C (padrão ANSI X3.159-1989) "
+            CENTRO, BRANCO_CLARO, PRETO_ESCURO);
+        exibir_espacador_interface();
+        exibir_linha_textual_interface("Este programa tem o objetivo auxiliar na "
+                             "compreensão de estruturas de dados",
+                             ESQUERDA, BRANCO_CLARO, PRETO_ESCURO);
+        exibir_linha_textual_interface("usando a linguagem C (padrão ANSI X3.159-1989) "
                              "de programação, quaisquer",
-                             LEFT, LIGHT_WHITE, DARK_BLACK);
-        print_interface_line("dúvidas contate o professor ou mande um email ou "
+                             ESQUERDA, BRANCO_CLARO, PRETO_ESCURO);
+        exibir_linha_textual_interface("dúvidas contate o professor ou mande um email ou "
                              "mensagem para o contato ao",
-                             LEFT, LIGHT_WHITE, DARK_BLACK);
-        print_interface_line("final, desta tela.", LEFT, LIGHT_WHITE,
-                             DARK_BLACK);
-        print_interface_padder();
-        print_interface_line("Este programa é de código aberto e livre "
+                             ESQUERDA, BRANCO_CLARO, PRETO_ESCURO);
+        exibir_linha_textual_interface("final, desta tela.", ESQUERDA, BRANCO_CLARO,
+                             PRETO_ESCURO);
+        exibir_espacador_interface();
+        exibir_linha_textual_interface("Este programa é de código aberto e livre "
                              "dísponivel no seguinte endereço web",
-                             CENTER, LIGHT_WHITE, DARK_BLACK);
-        print_interface_line(
-            "<https://github.com/MiraiMindz/banca_de_codigo_uerj>", CENTER,
-            LIGHT_BLUE, DARK_BLACK);
-        print_interface_padder();
-        print_interface_divider();
-        print_interface_padder();
-        print_interface_line("Escrito por Bruno C. Barreto (vulgo Mirai)", LEFT,
-                             LIGHT_WHITE, DARK_BLACK);
-        print_interface_line("- Email de Contato: barreto2contato@gmail.com",
-                             LEFT, LIGHT_WHITE, DARK_BLACK);
-        print_interface_line(
-            "- Telefone Celular de Contato: +55 (21) 97157-0580", LEFT,
-            LIGHT_WHITE, DARK_BLACK);
-        print_interface_padder();
-        print_interface_footer();
+                             CENTRO, BRANCO_CLARO, PRETO_ESCURO);
+        exibir_linha_textual_interface(
+            "<https://github.com/MiraiMindz/banca_de_codigo_uerj>", CENTRO,
+            AZUL_CLARO, PRETO_ESCURO);
+        exibir_espacador_interface();
+        exibir_divisor_interface();
+        exibir_espacador_interface();
+        exibir_linha_textual_interface("Escrito por Bruno C. Barreto (vulgo Mirai)", ESQUERDA,
+                             BRANCO_CLARO, PRETO_ESCURO);
+        exibir_linha_textual_interface("- Email de Contato: barreto2contato@gmail.com",
+                             ESQUERDA, BRANCO_CLARO, PRETO_ESCURO);
+        exibir_linha_textual_interface(
+            "- Telefone Celular de Contato: +55 (21) 97157-0580", ESQUERDA,
+            BRANCO_CLARO, PRETO_ESCURO);
+        exibir_espacador_interface();
+        exibir_linha_inferior_interface();
 
-        print_interface_option(1, "Ementa interativa");
-        print_interface_option(2, "Fila linear de tamanho fixo");
-        print_interface_option(3, "Pilha linear de tamanho fixo");
-        print_interface_option(4, "Ajuda");
-        print_interface_option(0, "Sair");
+        exibir_opcao_interface(1, "Ementa interativa");
+        exibir_opcao_interface(2, "Fila linear de tamanho fixo");
+        exibir_opcao_interface(3, "Pilha linear de tamanho fixo");
+        exibir_opcao_interface(4, "Ajuda");
+        exibir_opcao_interface(0, "Sair");
         printf("\n");
 
         printf("Digite os numeros entre [");
-        tc_set_color(LIGHT_WHITE, RESET);
+        cli_definir_cores(BRANCO_CLARO, PADRAO);
         printf("colchetes");
-        tc_reset_color();
+        cli_redefinir_cores();
         printf("] para se movimentar na aplicação e pressione\n");
         printf("ENTER para enviar sua resposta.\n\n");
 
@@ -185,46 +121,39 @@ void main_menu(void) {
 
         switch (escolha_global) {
         case 1:
-#ifdef _WIN32
-            system("cls");
-#else
-            system("clear");
-#endif
-            printf("Em Progresso...\n");
+            limpar_tela();
+            ementa_interativa();
             break;
         case 2:
+            limpar_tela();
             fila_fixa_menu_interativo();
+            limpar_tela();
             break;
         case 3:
+            limpar_tela();
             testar_pilha_fixa_menu_interativo();
+            limpar_tela();
             break;
         case 9:
-#ifdef _WIN32
-            system("cls");
-#else
-            system("clear");
-#endif
+            limpar_tela();
 
             printf("Digite os numeros entre [");
-            tc_set_color(LIGHT_WHITE, RESET);
+            cli_definir_cores(BRANCO_CLARO, PADRAO);
             printf("colchetes");
-            tc_reset_color();
+            cli_redefinir_cores();
             printf("] para se movimentar na aplicação e pressione\n");
             printf("ENTER para enviar sua resposta.\n\n");
         case 0:
-            tc_set_color(LIGHT_WHITE, RESET);
+            limpar_tela();
+            cli_definir_cores(BRANCO_CLARO, PADRAO);
             printf("Saindo...\n");
-            tc_reset_color();
+            cli_redefinir_cores();
             break;
         default:
-#ifdef _WIN32
-            system("cls");
-#else
-            system("clear");
-#endif
-            tc_set_color(LIGHT_RED, RESET);
+            limpar_tela();
+            cli_definir_cores(VERMELHO_CLARO, PADRAO);
             printf("Opção Invalida, favor tentar novamente.\n\n");
-            tc_reset_color();
+            cli_redefinir_cores();
             break;
         }
     } while (escolha_global != 0);

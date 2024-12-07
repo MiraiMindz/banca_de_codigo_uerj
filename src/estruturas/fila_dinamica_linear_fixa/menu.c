@@ -1,7 +1,16 @@
+/* -*- coding: utf-8 -*- */
+/* Encoding: UTF-8 */
+/* META-DADOS DO ARQUIVO DE CÓDIGO, NÃO MODIFICAR POR FAVOR */
 #include <estruturas/fila_dinamica_linear_fixa/menu.h>
 #include <internal/cli.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifdef _WIN32
+#define limpar_tela() system("cls")
+#else
+#define limpar_tela() system("clear")
+#endif
 
 void exibir_fila_fixa(fila_linear_fixa_t *fila_ptr,
                       unsigned char modificadores) {
@@ -42,29 +51,29 @@ void exibir_fila_fixa(fila_linear_fixa_t *fila_ptr,
                    "--------------------\\\n");
             if (exibir_todos_enderecos || exibir_enderecos) {
                 printf("|");
-                tc_set_color(LIGHT_GREEN, DARK_BLACK);
+                cli_definir_cores(VERDE_CLARO, PADRAO);
                 printf("%-18s", " INDICE");
-                tc_reset_color();
+                cli_redefinir_cores();
                 printf("|");
-                tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                cli_definir_cores(BRANCO_CLARO, PADRAO);
                 printf("%-41s", " VALOR");
-                tc_reset_color();
+                cli_redefinir_cores();
                 printf("|");
-                tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                cli_definir_cores(AZUL_CLARO, PADRAO);
                 printf("%18s", "ENDEREÇO ");
-                tc_reset_color();
+                cli_redefinir_cores();
                 printf("|");
                 printf("\n|------------------+---------------------------------"
                        "--------+-----------------|\n");
             } else {
                 printf("|");
-                tc_set_color(LIGHT_GREEN, DARK_BLACK);
+                cli_definir_cores(VERDE_CLARO, PADRAO);
                 printf("%-38s", " INDICE");
-                tc_reset_color();
+                cli_redefinir_cores();
                 printf("|");
-                tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                cli_definir_cores(BRANCO_CLARO, PADRAO);
                 printf("%39s", "VALOR ");
-                tc_reset_color();
+                cli_redefinir_cores();
                 printf("|");
                 printf("\n|--------------------------------------+-------------"
                        "--------------------------|\n");
@@ -75,27 +84,27 @@ void exibir_fila_fixa(fila_linear_fixa_t *fila_ptr,
                 for (i = 0; i < fila_ptr->capacidade; i++) {
                     if (exibir_todos_enderecos || exibir_enderecos) {
                         printf("| ");
-                        tc_set_color(LIGHT_GREEN, DARK_BLACK);
+                        cli_definir_cores(VERDE_CLARO, PADRAO);
                         printf(SHOW_STRING0A, i);
-                        tc_reset_color();
+                        cli_redefinir_cores();
                         printf(" | ");
-                        tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                        cli_definir_cores(BRANCO_CLARO, PADRAO);
                         printf(SHOW_STRING0B, fila_ptr->dados_ptr[i]);
-                        tc_reset_color();
+                        cli_redefinir_cores();
                         printf(" | ");
-                        tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                        cli_definir_cores(AZUL_CLARO, PADRAO);
                         printf("%15p", (void *)&fila_ptr->dados_ptr[i]);
-                        tc_reset_color();
+                        cli_redefinir_cores();
                         printf(" |");
                     } else {
                         printf("| ");
-                        tc_set_color(LIGHT_GREEN, DARK_BLACK);
+                        cli_definir_cores(VERDE_CLARO, PADRAO);
                         printf(SHOW_STRING1A, i);
-                        tc_reset_color();
+                        cli_redefinir_cores();
                         printf(" | ");
-                        tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                        cli_definir_cores(BRANCO_CLARO, PADRAO);
                         printf(SHOW_STRING1B, fila_ptr->dados_ptr[i]);
-                        tc_reset_color();
+                        cli_redefinir_cores();
                         printf(" |");
                     }
                     printf("\n");
@@ -105,27 +114,27 @@ void exibir_fila_fixa(fila_linear_fixa_t *fila_ptr,
                 for (i = fila_ptr->inicio; i < fila_ptr->final; i++) {
                     if (exibir_todos_enderecos || exibir_enderecos) {
                         printf("| ");
-                        tc_set_color(LIGHT_GREEN, DARK_BLACK);
+                        cli_definir_cores(VERDE_CLARO, PADRAO);
                         printf(SHOW_STRING0A, i);
-                        tc_reset_color();
+                        cli_redefinir_cores();
                         printf(" | ");
-                        tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                        cli_definir_cores(BRANCO_CLARO, PADRAO);
                         printf(SHOW_STRING0B, fila_ptr->dados_ptr[i]);
-                        tc_reset_color();
+                        cli_redefinir_cores();
                         printf(" | ");
-                        tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                        cli_definir_cores(AZUL_CLARO, PADRAO);
                         printf("%15p", (void *)&fila_ptr->dados_ptr[i]);
-                        tc_reset_color();
+                        cli_redefinir_cores();
                         printf(" |");
                     } else {
                         printf("| ");
-                        tc_set_color(LIGHT_GREEN, DARK_BLACK);
+                        cli_definir_cores(VERDE_CLARO, PADRAO);
                         printf(SHOW_STRING1A, i);
-                        tc_reset_color();
+                        cli_redefinir_cores();
                         printf(" | ");
-                        tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                        cli_definir_cores(BRANCO_CLARO, PADRAO);
                         printf(SHOW_STRING1B, fila_ptr->dados_ptr[i]);
-                        tc_reset_color();
+                        cli_redefinir_cores();
                         printf(" |");
                     }
                     printf("\n");
@@ -139,21 +148,21 @@ void exibir_fila_fixa(fila_linear_fixa_t *fila_ptr,
                    "--------------------\\\n");
             if (exibir_todos_enderecos || exibir_enderecos) {
                 printf("|");
-                tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                cli_definir_cores(BRANCO_CLARO, PADRAO);
                 printf("%-38s", " VALOR");
-                tc_reset_color();
+                cli_redefinir_cores();
                 printf("|");
-                tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                cli_definir_cores(AZUL_CLARO, PADRAO);
                 printf("%40s", "ENDEREÇO ");
-                tc_reset_color();
+                cli_redefinir_cores();
                 printf("|");
                 printf("\n|--------------------------------------+-------------"
                        "--------------------------|\n");
             } else {
                 printf("|");
-                tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                cli_definir_cores(BRANCO_CLARO, PADRAO);
                 printf("%-78s", " VALOR");
-                tc_reset_color();
+                cli_redefinir_cores();
                 printf("|");
                 printf("\n|----------------------------------------------------"
                        "--------------------------|\n");
@@ -164,19 +173,19 @@ void exibir_fila_fixa(fila_linear_fixa_t *fila_ptr,
                 for (i = fila_ptr->inicio; i < fila_ptr->final; i++) {
                     if (exibir_todos_enderecos || exibir_enderecos) {
                         printf("| ");
-                        tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                        cli_definir_cores(BRANCO_CLARO, PADRAO);
                         printf(SHOW_STRING2, fila_ptr->dados_ptr[i]);
-                        tc_reset_color();
+                        cli_redefinir_cores();
                         printf(" | ");
-                        tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                        cli_definir_cores(AZUL_CLARO, PADRAO);
                         printf("%37p", (void *)&fila_ptr->dados_ptr[i]);
-                        tc_reset_color();
+                        cli_redefinir_cores();
                         printf(" |");
                     } else {
                         printf("| ");
-                        tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                        cli_definir_cores(AZUL_CLARO, PADRAO);
                         printf(SHOW_STRING3, fila_ptr->dados_ptr[i]);
-                        tc_reset_color();
+                        cli_redefinir_cores();
                         printf(" |");
                     }
                     printf("\n");
@@ -185,19 +194,19 @@ void exibir_fila_fixa(fila_linear_fixa_t *fila_ptr,
                 for (i = 0; i < fila_ptr->capacidade; i++) {
                     if (exibir_todos_enderecos || exibir_enderecos) {
                         printf("| ");
-                        tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                        cli_definir_cores(BRANCO_CLARO, PADRAO);
                         printf(SHOW_STRING2, fila_ptr->dados_ptr[i]);
-                        tc_reset_color();
+                        cli_redefinir_cores();
                         printf(" | ");
-                        tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                        cli_definir_cores(AZUL_CLARO, PADRAO);
                         printf("%37p", (void *)&fila_ptr->dados_ptr[i]);
-                        tc_reset_color();
+                        cli_redefinir_cores();
                         printf(" |");
                     } else {
                         printf("| ");
-                        tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                        cli_definir_cores(AZUL_CLARO, PADRAO);
                         printf(SHOW_STRING3, fila_ptr->dados_ptr[i]);
-                        tc_reset_color();
+                        cli_redefinir_cores();
                         printf(" |");
                     }
                     printf("\n");
@@ -209,15 +218,15 @@ void exibir_fila_fixa(fila_linear_fixa_t *fila_ptr,
     } else {
         if (exibir_todos_os_valores) {
             for (i = 0; i < fila_ptr->capacidade; i++) {
-                tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                cli_definir_cores(BRANCO_CLARO, PADRAO);
                 printf(SHOW_STRING4, fila_ptr->dados_ptr[i]);
-                tc_reset_color();
+                cli_redefinir_cores();
 
                 /* Exibe o endereço se configurado. */
                 if (exibir_enderecos) {
-                    tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                    cli_definir_cores(AZUL_CLARO, PADRAO);
                     printf(" (%p)", (void *)&fila_ptr->dados_ptr[i]);
-                    tc_reset_color();
+                    cli_redefinir_cores();
                     printf("\n");
                 } else {
                     /* Exibe o conector entre elementos. */
@@ -230,15 +239,15 @@ void exibir_fila_fixa(fila_linear_fixa_t *fila_ptr,
         } else {
             /* Exibe em formato de fila (com separador configurável). */
             for (i = fila_ptr->inicio; i < fila_ptr->final; i++) {
-                tc_set_color(LIGHT_WHITE, DARK_BLACK);
+                cli_definir_cores(BRANCO_CLARO, PADRAO);
                 printf(SHOW_STRING4, fila_ptr->dados_ptr[i]);
-                tc_reset_color();
+                cli_redefinir_cores();
 
                 /* Exibe o endereço se configurado. */
                 if (exibir_enderecos) {
-                    tc_set_color(LIGHT_BLUE, DARK_BLACK);
+                    cli_definir_cores(AZUL_CLARO, PADRAO);
                     printf(" (%p)", (void *)&fila_ptr->dados_ptr[i]);
-                    tc_reset_color();
+                    cli_redefinir_cores();
                     printf("\n");
                 } else {
                     /* Exibe o conector entre elementos. */
@@ -267,13 +276,10 @@ void fila_fixa_menu_interativo(void) {
     exibir_ao_mudar = 0;
     capacidade = 0;
 
-/* Usamos diretrizes do pré-processador para definir o comando correto
-   para limpar a saida do terminal. */
-#ifdef _WIN32
-    system("cls");
-#else
-    system("clear");
-#endif
+    /* Usamos diretrizes do pré-processador para definir o comando correto
+       para limpar a saida do terminal. */
+
+    limpar_tela();
     do {
         printf("Menu interativo de teste e exibição da fila linear de alocação "
                "dinamica e tamanho fixo\n");
@@ -296,22 +302,14 @@ void fila_fixa_menu_interativo(void) {
 
         switch (escolha) {
         case 1:
-#ifdef _WIN32
-            system("cls");
-#else
-            system("clear");
-#endif
+            limpar_tela();
             do {
                 printf("[1] CRIAR FILA\n\n");
                 printf("Insira a capacidade da fila: ");
                 scanf("%lu", &capacidade);
 
                 if (capacidade <= 0) {
-#ifdef _WIN32
-                    system("cls");
-#else
-                    system("clear");
-#endif
+                    limpar_tela();
                     printf("A capacidade deve ser um número positivo maior que "
                            "zero\n\n");
                     continue;
@@ -323,13 +321,9 @@ void fila_fixa_menu_interativo(void) {
                         fila = criar_fila_fixa_ret(capacidade);
                     }
 
-/* Usamos diretrizes do pré-processador para definir o comando correto
-para limpar a saida do terminal. */
-#ifdef _WIN32
-                    system("cls");
-#else
-                    system("clear");
-#endif
+                    /* Usamos diretrizes do pré-processador para definir o
+                    comando correto para limpar a saida do terminal. */
+                    limpar_tela();
                     printf("FILA FIXA LINEAR CRIADA COM CAPACIDADE PARA %lu "
                            "ITEMS.\n",
                            capacidade);
@@ -343,11 +337,7 @@ para limpar a saida do terminal. */
             capacidade = 0;
             break;
         case 2:
-#ifdef _WIN32
-            system("cls");
-#else
-            system("clear");
-#endif
+            limpar_tela();
             printf("[2] ADICIONAR ELEMENTO\n\n");
 
             printf("Insira o valor desejado: ");
@@ -355,11 +345,7 @@ para limpar a saida do terminal. */
 
             inserir_valor_fila_fixa_ret(fila, valor);
 
-#ifdef _WIN32
-            system("cls");
-#else
-            system("clear");
-#endif
+            limpar_tela();
 
             if (exibir_ao_mudar != 0) {
                 if ((opcoes_exibicao & (1 << 1)) != 0) {
@@ -375,20 +361,12 @@ para limpar a saida do terminal. */
             printf("\n");
             break;
         case 3:
-#ifdef _WIN32
-            system("cls");
-#else
-            system("clear");
-#endif
+            limpar_tela();
             printf("[3] REMOVER ELEMENTO\n\n");
 
             valor_removido = remover_valor_fila_fixa_ret(fila);
 
-#ifdef _WIN32
-            system("cls");
-#else
-            system("clear");
-#endif
+            limpar_tela();
 
             printf(PRINTF_FORMAT_STR, valor_removido);
 
@@ -406,11 +384,7 @@ para limpar a saida do terminal. */
             printf("\n");
             break;
         case 4:
-#ifdef _WIN32
-            system("cls");
-#else
-            system("clear");
-#endif
+            limpar_tela();
             printf("[4] REINICIAR FILA\n\n");
 
             reiniciar_fila_fixa(fila);
@@ -421,11 +395,7 @@ para limpar a saida do terminal. */
             printf("\n");
             break;
         case 5:
-#ifdef _WIN32
-            system("cls");
-#else
-            system("clear");
-#endif
+            limpar_tela();
             printf("[5] REALOCAR ELEMENTOS\n\n");
 
             realocar_mover_fila_fixa(fila);
@@ -436,11 +406,7 @@ para limpar a saida do terminal. */
             printf("\n");
             break;
         case 6:
-#ifdef _WIN32
-            system("cls");
-#else
-            system("clear");
-#endif
+            limpar_tela();
 
             do {
                 printf("[6] CONFIGURAR OPÇÕES DE EXIBIÇÃO\n\n");
@@ -451,39 +417,13 @@ para limpar a saida do terminal. */
                 printf(
                     "verdadeiro serão transformados em falso e vice-versa.\n");
                 printf("Lista de opções:\n");
-                printf("\t(1) - Exibir conectores [%s]\n",
-                       ((opcoes_exibicao & (1 << 0)) != 0) ? "SELECIONADO"
-                                                           : "DISPONIVEL");
-                printf("\t\tExibe -> ao invés de virgulas na exibição não "
-                       "tabular da fila.\n");
-                printf(
-                    "\t(2) - Exibir endereço do inicio, atual e final [%s]\n",
-                    ((opcoes_exibicao & (1 << 1)) != 0) ? "SELECIONADO"
-                                                        : "DISPONIVEL");
-                printf("\t\tExibe os endereços dos elementos a cada ação\n");
-                printf("\t(3) - Exibir como tabela [%s]\n",
-                       ((opcoes_exibicao & (1 << 2)) != 0) ? "SELECIONADO"
-                                                           : "DISPONIVEL");
-                printf("\t\tExibe a fila como uma tabela\n");
-                printf("\t(4) - Exibir todos os endereços [%s]\n",
-                       ((opcoes_exibicao & (1 << 3)) != 0) ? "SELECIONADO"
-                                                           : "DISPONIVEL");
-                printf("\t\tExibe os endereços nas visões tabular e linear da "
-                       "fila\n");
-                printf("\t(5) - Exibir posições [%s]\n",
-                       ((opcoes_exibicao & (1 << 4)) != 0) ? "SELECIONADO"
-                                                           : "DISPONIVEL");
-                printf("\t\tExibe os indices na visão tabular da fila\n");
-                printf("\t(6) - Exibir fila completa [%s]\n",
-                       ((opcoes_exibicao & (1 << 5)) != 0) ? "SELECIONADO"
-                                                           : "DISPONIVEL");
-                printf("\t\tExibe todos os valores, mesmo que os espaços "
-                       "estejam em branco.\n");
-                printf("\t(9) - Exibir fila em todas as ações [%s]\n",
-                       (exibir_ao_mudar != 0) ? "SELECIONADO" : "DISPONIVEL");
-                printf("\t\tExibe a fila em todas as ações, nota-se que se "
-                       "não definir a opção (6), caso a fila esteja em "
-                       "branco, nada será exibido.\n");
+                exibir_opcao_configurar_display(1, "Exibir conectores", "Exibe -> ao invés de virgulas na exibição não tabular da fila.", (opcoes_exibicao & (1 << 0)));
+                exibir_opcao_configurar_display(2, "Exibir endereço do inicio, atual e final", "Exibe os endereços dos elementos a cada ação", (opcoes_exibicao & (1 << 1)));
+                exibir_opcao_configurar_display(3, "Exibir como tabela", "Exibe a fila como tabela", (opcoes_exibicao & (1 << 3)));
+                exibir_opcao_configurar_display(4, "Exibir todos os endereços", "Exibe os endereços nas visões tabular e linear da fila", (opcoes_exibicao & (1 << 4)));
+                exibir_opcao_configurar_display(5, "Exibir posições", "Exibe os indices na visão tabular da fila", (opcoes_exibicao & (1 << 5)));
+                exibir_opcao_configurar_display(6, "Exibir fila completa", "Exibe todos os valores, mesmo que estejam em branco", (opcoes_exibicao & (1 << 6)));
+                exibir_opcao_configurar_display(9, "Exibir a fila em todas as ações", "Exibe a fila em todas as ações, nota-se que se não definir a opção (6), caso a fila esteja em branco, nada será exibido ao criar a lista", exibir_ao_mudar);
                 printf("\t(0) - Voltar ao menu principal\n");
                 printf("\t\tFecha esse menu e retorna ao menu principal.\n");
                 printf("\n\n");
@@ -494,93 +434,49 @@ para limpar a saida do terminal. */
                 switch (escolha_exibicao) {
                 case 1:
                     opcoes_exibicao ^= (1 << 0);
-#ifdef _WIN32
-                    system("cls");
-#else
-                    system("clear");
-#endif
+                    limpar_tela();
                     break;
                 case 2:
                     opcoes_exibicao ^= (1 << 1);
-#ifdef _WIN32
-                    system("cls");
-#else
-                    system("clear");
-#endif
+                    limpar_tela();
                     break;
                 case 3:
                     opcoes_exibicao ^= (1 << 2);
-#ifdef _WIN32
-                    system("cls");
-#else
-                    system("clear");
-#endif
+                    limpar_tela();
                     break;
                 case 4:
                     opcoes_exibicao ^= (1 << 3);
-#ifdef _WIN32
-                    system("cls");
-#else
-                    system("clear");
-#endif
+                    limpar_tela();
                     break;
                 case 5:
                     opcoes_exibicao ^= (1 << 4);
-#ifdef _WIN32
-                    system("cls");
-#else
-                    system("clear");
-#endif
+                    limpar_tela();
                     break;
                 case 6:
                     opcoes_exibicao ^= (1 << 5);
-#ifdef _WIN32
-                    system("cls");
-#else
-                    system("clear");
-#endif
+                    limpar_tela();
                     break;
                 case 9:
                     exibir_ao_mudar = !exibir_ao_mudar;
-#ifdef _WIN32
-                    system("cls");
-#else
-                    system("clear");
-#endif
+                    limpar_tela();
                     break;
                 case 0:
-#ifdef _WIN32
-                    system("cls");
-#else
-                    system("clear");
-#endif
+                    limpar_tela();
                     break;
                 default:
-#ifdef _WIN32
-                    system("cls");
-#else
-                    system("clear");
-#endif
+                    limpar_tela();
                     printf("OPÇÃO INVALIDA\n\n");
                     break;
                 }
             } while (escolha_exibicao != 0);
             break;
         case 7:
-#ifdef _WIN32
-            system("cls");
-#else
-            system("clear");
-#endif
+            limpar_tela();
             printf("[7] EXIBIR FILA\n\n");
             exibir_fila_fixa(fila, opcoes_exibicao);
             break;
         case 8:
-#ifdef _WIN32
-            system("cls");
-#else
-            system("clear");
-#endif
+            limpar_tela();
             printf("Você utiliza os números entre colchetes para se movimentar "
                    "na aplicação\n");
             printf("A primeira opção cria uma fila ou sobreescreve uma fila "
@@ -607,11 +503,7 @@ para limpar a saida do terminal. */
             printf("Saindo.\n");
             break;
         default:
-#ifdef _WIN32
-            system("cls");
-#else
-            system("clear");
-#endif
+            limpar_tela();
             printf("Opção Invalida, favor tentar novamente.\n\n");
             break;
         }
