@@ -293,8 +293,8 @@ char *printf_para_string(const char *formato, ...) {
  * @return char* (um ponteiro para a string formatada, ou NULL em caso de erro)
  * @param formato: const char* (a string de formato que define como os
  *argumentos devem ser formatados)
- * @param args:va_list (argumentos variáveis que serão formatados de acordo com o
- *formato fornecido)
+ * @param args:va_list (argumentos variáveis que serão formatados de acordo com
+ *o formato fornecido)
  *
  * A função utiliza um formato fornecido e argumentos variáveis para criar uma
  *string formatada e retornar o resultado em um buffer alocado dinamicamente.
@@ -473,7 +473,7 @@ const char *operadores[] = {
  *corresponde ao primeiro plano e o tipo 1 ao fundo.
  **/
 char *obter_codigo_ansi(cores_terminal_t cor, int tipo) {
-    if (tipo == 0) { // Foreground
+    if (tipo == 0) { /* Foreground */
         switch (cor) {
         case PADRAO:
             return "\033[0m";
@@ -1571,8 +1571,8 @@ char **colorizar_codigo_em_c_array_strings(char *codigo,
 
         /* Lida com strings entre aspas duplas */
         if (*ponteiro == '"') {
-            string_dq_inicio = printf_para_string(
-                "%s\"", obter_codigo_ansi(VERDE_CLARO, 0));
+            string_dq_inicio =
+                printf_para_string("%s\"", obter_codigo_ansi(VERDE_CLARO, 0));
             strcat(linha_atual, string_dq_inicio);
             free(string_dq_inicio);
             ponteiro++;
@@ -1690,18 +1690,24 @@ char **colorizar_codigo_em_c_array_strings(char *codigo,
 
 /**
  * @name concatenar_dinamico
- * @param destino Ponteiro para a string destino. Será realocado para acomodar o conteúdo.
+ * @param destino Ponteiro para a string destino. Será realocado para acomodar o
+ * conteúdo.
  * @param fonte String a ser concatenada.
- * @return novo_destino:char* Ponteiro para a string concatenada ou NULL em caso de erro.
+ * @return novo_destino:char* Ponteiro para a string concatenada ou NULL em caso
+ * de erro.
  *
  * Função para concatenar dinamicamente strings.
  */
 char *concatenar_dinamico(char *destino, const char *fonte) {
-    unsigned long tamanho_atual = destino ? strlen(destino) : 0;
-    unsigned long tamanho_fonte = fonte ? strlen(fonte) : 0;
-    char *novo_destino = realloc(destino, tamanho_atual + tamanho_fonte + 1);
+    unsigned long tamanho_atual;
+    unsigned long tamanho_fonte;
+    char *novo_destino;
+    
+    tamanho_atual = destino ? strlen(destino) : 0;
+    tamanho_fonte = fonte ? strlen(fonte) : 0;
+    novo_destino = realloc(destino, tamanho_atual + tamanho_fonte + 1);
     if (novo_destino == NULL) {
-        free(destino); // Libera memória anterior, se houver
+        free(destino); /* Libera memória anterior, se houver */
         return NULL;
     }
     strcpy(novo_destino + tamanho_atual, fonte);
@@ -1711,7 +1717,8 @@ char *concatenar_dinamico(char *destino, const char *fonte) {
 /**
  * @name remover_ultima_nova_linha
  * @param str A string de entrada a ser modificada.
- * @return str:char* Retorna a string modificada ou NULL se a entrada for inválida.
+ * @return str:char* Retorna a string modificada ou NULL se a entrada for
+ * inválida.
  *
  * Remove o último '\n' no final de uma string, se existir.
  */
@@ -1741,7 +1748,8 @@ char *remover_ultima_nova_linha(char *str) {
 }
 
 /**
- * Função para renderizar tokens Markdown em uma sequência de strings formatadas.
+ * Função para renderizar tokens Markdown em uma sequência de strings
+ * formatadas.
  *
  * @param tokens: Array de tokens a serem processados.
  * @param quantidade_tokens: Número de tokens no array.
@@ -1752,83 +1760,103 @@ char **renderizar_tokens_para_strings(token_markdown_t tokens[],
                                       int quantidade_tokens,
                                       int *numero_linhas) {
     int i;
-    char *linha_atual = NULL;
-    char *token_atual = NULL;
-    char **linhas = NULL;
-    char **linhas_codigo = NULL;
     unsigned long num_linhas_codigo;
+    char *linha_atual;
+    char *token_atual;
+    char **linhas;
+    char **linhas_codigo;
 
-    // Inicializa o contador de linhas
+    linha_atual = NULL;
+    token_atual = NULL;
+    linhas = NULL;
+    linhas_codigo = NULL;
+
+
+    /* Inicializa o contador de linhas */
     *numero_linhas = 0;
 
-    // Aloca memória para armazenar as linhas
+    /* Aloca memória para armazenar as linhas */
     linhas = (char **)calloc(quantidade_tokens, sizeof(char *));
     if (linhas == NULL) {
         return NULL;
     }
 
-    // Itera sobre os tokens
+    /* Itera sobre os tokens */
     for (i = 0; i < quantidade_tokens; i++) {
-        // Libera o token anterior e reinicia o token atual
+        /* Libera o token anterior e reinicia o token atual */
         free(token_atual);
         token_atual = NULL;
 
         switch (tokens[i].tipo) {
         case CABECALHO:
-            token_atual = concatenar_dinamico(token_atual, obter_codigo_ansi(BRANCO_CLARO, 1));
-            token_atual = concatenar_dinamico(token_atual, obter_codigo_ansi(PRETO_ESCURO, 0));
+            token_atual = concatenar_dinamico(
+                token_atual, obter_codigo_ansi(BRANCO_CLARO, 1));
+            token_atual = concatenar_dinamico(
+                token_atual, obter_codigo_ansi(PRETO_ESCURO, 0));
             token_atual = concatenar_dinamico(token_atual, tokens[i].conteudo);
-            token_atual = concatenar_dinamico(token_atual, obter_codigo_ansi(PADRAO, 0));
-            token_atual = concatenar_dinamico(token_atual, obter_codigo_ansi(PADRAO, 1));
+            token_atual =
+                concatenar_dinamico(token_atual, obter_codigo_ansi(PADRAO, 0));
+            token_atual =
+                concatenar_dinamico(token_atual, obter_codigo_ansi(PADRAO, 1));
             token_atual = concatenar_dinamico(token_atual, "\n");
             break;
 
         case ITALICO:
-            token_atual = concatenar_dinamico(token_atual, obter_codigo_ansi(AMARELO_ESCURO, 0));
+            token_atual = concatenar_dinamico(
+                token_atual, obter_codigo_ansi(AMARELO_ESCURO, 0));
             token_atual = concatenar_dinamico(token_atual, tokens[i].conteudo);
-            token_atual = concatenar_dinamico(token_atual, obter_codigo_ansi(PADRAO, 0));
+            token_atual =
+                concatenar_dinamico(token_atual, obter_codigo_ansi(PADRAO, 0));
             break;
 
         case NEGRITO:
-            token_atual = concatenar_dinamico(token_atual, obter_codigo_ansi(BRANCO_CLARO, 0));
+            token_atual = concatenar_dinamico(
+                token_atual, obter_codigo_ansi(BRANCO_CLARO, 0));
             token_atual = concatenar_dinamico(token_atual, tokens[i].conteudo);
-            token_atual = concatenar_dinamico(token_atual, obter_codigo_ansi(PADRAO, 0));
+            token_atual =
+                concatenar_dinamico(token_atual, obter_codigo_ansi(PADRAO, 0));
             break;
 
         case CODIGO:
-            token_atual = concatenar_dinamico(token_atual, obter_codigo_ansi(AZUL_CLARO, 0));
+            token_atual = concatenar_dinamico(token_atual,
+                                              obter_codigo_ansi(AZUL_CLARO, 0));
             token_atual = concatenar_dinamico(token_atual, tokens[i].conteudo);
-            token_atual = concatenar_dinamico(token_atual, obter_codigo_ansi(PADRAO, 0));
+            token_atual =
+                concatenar_dinamico(token_atual, obter_codigo_ansi(PADRAO, 0));
             break;
 
         case LISTA:
-            // Inicializa o token_atual com o código ANSI e conteúdo
-            token_atual = concatenar_dinamico(token_atual, obter_codigo_ansi(BRANCO_ESCURO, 0));
+            token_atual = concatenar_dinamico(
+                token_atual, obter_codigo_ansi(BRANCO_ESCURO, 0));
             token_atual = concatenar_dinamico(token_atual, tokens[i].conteudo);
-            token_atual = concatenar_dinamico(token_atual, obter_codigo_ansi(PADRAO, 0));
+            token_atual =
+                concatenar_dinamico(token_atual, obter_codigo_ansi(PADRAO, 0));
 
             if (token_atual == NULL) {
                 liberar_strings_dinamicas(linhas, *numero_linhas);
                 return NULL;
             }
 
-            // Cria uma string de tabulação com base no nivel_lista
-            char *tabs = malloc(tokens[i].nivel_lista + 1); // +1 para o '\0' no final
+            /* Cria uma string de tabulação com base no nivel_lista */
+            char *tabs =
+                malloc(tokens[i].nivel_lista + 1); /* +1 para o '\0' no final */
             if (tabs == NULL) {
                 free(token_atual);
                 liberar_strings_dinamicas(linhas, *numero_linhas);
                 return NULL;
             }
 
-            // Preenche a string com '\t' de acordo com o nível da lista
+            /* Preenche a string com '\t' de acordo com o nível da lista */
             for (int j = 0; j < tokens[i].nivel_lista; j++) {
                 tabs[j] = '\t';
             }
-            tabs[tokens[i].nivel_lista] = '\0'; // Garantir que a string termine com '\0'
+            tabs[tokens[i].nivel_lista] =
+                '\0'; /* Garantir que a string termine com '\0' */
 
-            // Adiciona os tabs no início do token_atual
+            /* Adiciona os tabs no início do token_atual */
             char *novo_token_atual = concatenar_dinamico(NULL, tabs);
-            novo_token_atual = concatenar_dinamico(novo_token_atual, token_atual);
+            novo_token_atual =
+                concatenar_dinamico(novo_token_atual, token_atual);
             free(tabs);
             free(token_atual);
 
@@ -1840,17 +1868,19 @@ char **renderizar_tokens_para_strings(token_markdown_t tokens[],
             token_atual = novo_token_atual;
             break;
 
-
         case BLOCO_CITACAO:
-            token_atual = concatenar_dinamico(token_atual, obter_codigo_ansi(PRETO_CLARO, 0));
+            token_atual = concatenar_dinamico(
+                token_atual, obter_codigo_ansi(PRETO_CLARO, 0));
             token_atual = concatenar_dinamico(token_atual, "> ");
             token_atual = concatenar_dinamico(token_atual, tokens[i].conteudo);
-            token_atual = concatenar_dinamico(token_atual, obter_codigo_ansi(PADRAO, 0));
+            token_atual =
+                concatenar_dinamico(token_atual, obter_codigo_ansi(PADRAO, 0));
             break;
 
         case BLOCO_CODIGO:
             if (strcmp(tokens[i].language, "c") == 0) {
-                linhas_codigo = colorizar_codigo_em_c_array_strings(tokens[i].conteudo, &num_linhas_codigo);
+                linhas_codigo = colorizar_codigo_em_c_array_strings(
+                    tokens[i].conteudo, &num_linhas_codigo);
                 if (linhas_codigo == NULL) {
                     free(token_atual);
                     liberar_strings_dinamicas(linhas, *numero_linhas);
@@ -1859,7 +1889,8 @@ char **renderizar_tokens_para_strings(token_markdown_t tokens[],
                 for (unsigned long j = 0; j < num_linhas_codigo; j++) {
                     linhas[*numero_linhas] = duplicar_string(linhas_codigo[j]);
                     if (linhas[*numero_linhas] == NULL) {
-                        liberar_strings_dinamicas(linhas_codigo, num_linhas_codigo);
+                        liberar_strings_dinamicas(linhas_codigo,
+                                                  num_linhas_codigo);
                         liberar_strings_dinamicas(linhas, *numero_linhas);
                         return NULL;
                     }
@@ -1868,16 +1899,21 @@ char **renderizar_tokens_para_strings(token_markdown_t tokens[],
                 liberar_strings_dinamicas(linhas_codigo, num_linhas_codigo);
                 continue;
             } else {
-                token_atual = concatenar_dinamico(token_atual, obter_codigo_ansi(AZUL_ESCURO, 0));
-                token_atual = concatenar_dinamico(token_atual, tokens[i].conteudo);
-                token_atual = concatenar_dinamico(token_atual, obter_codigo_ansi(PADRAO, 0));
+                token_atual = concatenar_dinamico(
+                    token_atual, obter_codigo_ansi(AZUL_ESCURO, 0));
+                token_atual =
+                    concatenar_dinamico(token_atual, tokens[i].conteudo);
+                token_atual = concatenar_dinamico(token_atual,
+                                                  obter_codigo_ansi(PADRAO, 0));
             }
             break;
 
         case TEXTO:
-            token_atual = concatenar_dinamico(token_atual, obter_codigo_ansi(BRANCO_ESCURO, 0));
+            token_atual = concatenar_dinamico(
+                token_atual, obter_codigo_ansi(BRANCO_ESCURO, 0));
             token_atual = concatenar_dinamico(token_atual, tokens[i].conteudo);
-            token_atual = concatenar_dinamico(token_atual, obter_codigo_ansi(PADRAO, 0));
+            token_atual =
+                concatenar_dinamico(token_atual, obter_codigo_ansi(PADRAO, 0));
             break;
         }
 
@@ -1886,10 +1922,10 @@ char **renderizar_tokens_para_strings(token_markdown_t tokens[],
             return NULL;
         }
 
-        // Concatena o token à linha atual
+        /* Concatena o token à linha atual */
         linha_atual = concatenar_dinamico(linha_atual, token_atual);
 
-        // Se encontrar uma nova linha, armazena a linha atual
+        /* Se encontrar uma nova linha, armazena a linha atual */
         if (strchr(linha_atual, '\n') != NULL) {
             linhas[*numero_linhas] = duplicar_string(linha_atual);
             if (linhas[*numero_linhas] == NULL) {
@@ -1904,7 +1940,7 @@ char **renderizar_tokens_para_strings(token_markdown_t tokens[],
         }
     }
 
-    // Adiciona a última linha, se houver
+    /* Adiciona a última linha, se houver */
     if (linha_atual != NULL) {
         linhas[*numero_linhas] = duplicar_string(linha_atual);
         if (linhas[*numero_linhas] == NULL) {
@@ -1936,24 +1972,35 @@ char **renderizar_tokens_para_strings(token_markdown_t tokens[],
 void tokenizar(char *linha, token_markdown_t tokens[], int *quantidade_tokens,
                int *espacos_lista) {
     /* Declaração de variáveis */
-    static int em_bloco_codigo = 0;
     char buffer[1024];
-    int indice_buffer = 0;
-    char *ptr = linha;
-    char *language;
     char language_buffer[1024];
-    int language_c = 0;
-    char *ch;
-    int identacao_lista = 0;
-    int identacao_atual = 0;
-    char title_buffer[1024];
-    int title_c = 0;
-    char bold_buffer[1024];
-    int bold_c = 0;
-    char italic_buffer[1024];
-    int italic_c = 0;
     char codeblock_buffer[1024];
-    int codeblock_c = 0;
+    char title_buffer[1024];
+    char bold_buffer[1024];
+    char italic_buffer[1024];
+    int indice_buffer;
+    char *ptr;
+    char *language;
+    int language_c;
+    int codeblock_c;
+    int em_bloco_codigo;
+    char *ch;
+    int identacao_lista;
+    int identacao_atual;
+    int title_c;
+    int bold_c;
+    int italic_c;
+    
+    identacao_lista = 0;
+    identacao_atual = 0;
+    title_c = 0;
+    bold_c = 0;
+    italic_c = 0;
+    em_bloco_codigo = 0;
+    ptr = linha;
+    codeblock_c = 0;
+    indice_buffer = 0;
+    language_c = 0;
 
     /* Verifica início ou fim de bloco de código */
     if (strncmp(linha, "```", 3) == 0) {
@@ -2277,9 +2324,12 @@ void paginador(char *texto) {
     while (sair == 1) {
         limpar_tela();
 
-        printf("+------------------------------------------------------------------------------+\n");
-        printf("|                             EMENTÁRIO INTERATIVO                             |\n");
-        printf("+------------------------------------------------------------------------------+\n");
+        printf("+--------------------------------------------------------------"
+               "----------------+\n");
+        printf("|                             EMENTÁRIO INTERATIVO             "
+               "                |\n");
+        printf("+--------------------------------------------------------------"
+               "----------------+\n");
         printf("\n");
 
         total_de_linhas = linha_atual + altura_da_tela;
@@ -2292,13 +2342,18 @@ void paginador(char *texto) {
         }
 
         printf("\n");
-        printf("+------------------------------------------------------------------------------+\n");
-        printf("|        %s        |                                       %04d/%04d LINHAS  |\n", 
-        (total_de_linhas == contagem_de_linhas) ? "FIM " : "MAIS",
-        total_de_linhas, contagem_de_linhas);
-        printf("+------------------------------------------------------------------------------+\n");
-        printf("|   Use [d] para descer    |    Use [s] para subir    |    use [q] prara sair  |\n");
-        printf("+------------------------------------------------------------------------------+\n");
+        printf("+--------------------------------------------------------------"
+               "----------------+\n");
+        printf("|        %s        |                                       "
+               "%04d/%04d LINHAS  |\n",
+               (total_de_linhas == contagem_de_linhas) ? "FIM " : "MAIS",
+               total_de_linhas, contagem_de_linhas);
+        printf("+--------------------------------------------------------------"
+               "----------------+\n");
+        printf("|   Use [d] para descer    |    Use [s] para subir    |    use "
+               "[q] prara sair  |\n");
+        printf("+--------------------------------------------------------------"
+               "----------------+\n");
         printf("\n");
 
         opcao = getchar();

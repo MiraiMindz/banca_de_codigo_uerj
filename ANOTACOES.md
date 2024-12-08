@@ -18,7 +18,7 @@
         - também permitir que o usuário digite q para sair ou um número para ir para determinada seção.
     - [ ] refatorar a função de exibição de linhas do menu
     - [x] fazer com que o paginador ignore cores na contagem de bytes das strings
-    - [ ] fazer com que o paginador considere caracteres de multiplos bytes (UTF-8)
+    - [x] fazer com que o paginador considere caracteres de multiplos bytes (UTF-8)
     - [x] fazer o paginador processar markdown
 
 - Programa
@@ -49,6 +49,7 @@
             - > a diferença entre uma fila e uma lista é que a lista tem inserção e
             remoção em posições arbitrarias enquanto a fila não.
         - [ ] Tabela de dispersão (tabela hash/hash table)
+        - [ ] Conjuntos
         - [ ] árvores
             - [ ] árvores binarias
             - [ ] árvores N-árias

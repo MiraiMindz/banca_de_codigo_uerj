@@ -103,9 +103,11 @@ void main_menu(void) {
         exibir_linha_inferior_interface();
 
         exibir_opcao_interface(1, "Ementa interativa");
-        exibir_opcao_interface(2, "Fila linear de tamanho fixo");
-        exibir_opcao_interface(3, "Pilha linear de tamanho fixo");
-        exibir_opcao_interface(4, "Ajuda");
+        exibir_opcao_interface(2, "Filas");
+        exibir_opcao_interface(3, "Pilhas");
+        exibir_opcao_interface(4, "Listas");
+        exibir_opcao_interface(5, "Tabelas");
+        exibir_opcao_interface(6, "Grafos (Arvores)");
         exibir_opcao_interface(0, "Sair");
         printf("\n");
 
