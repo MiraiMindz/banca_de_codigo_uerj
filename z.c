@@ -1,121 +1,104 @@
-/* -*- coding: utf-8 -*- */
-/* Encoding: UTF-8 */
-/* META-DADOS DO ARQUIVO DE CÓDIGO, NÃO MODIFICAR POR FAVOR */
-#include "config/config.h"
 #include <ctype.h>
-#include <internal/cli.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #ifdef _WIN32
-#include <malloc.h>
-#include <windows.h>
 #define limpar_tela() system("cls")
 #else
-#include <alloca.h>
 #define limpar_tela() system("clear")
 #endif
 
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
+typedef enum cores_terminal_e {
+    PADRAO,
+    PRETO_CLARO,
+    VERMELHO_CLARO,
+    VERDE_CLARO,
+    AMARELO_CLARO,
+    AZUL_CLARO,
+    MAGENTA_CLARO,
+    CIANO_CLARO,
+    BRANCO_CLARO,
+    PRETO_ESCURO,
+    VERMELHO_ESCURO,
+    VERDE_ESCURO,
+    AMARELO_ESCURO,
+    AZUL_ESCURO,
+    MAGENTA_ESCURO,
+    CIANO_ESCURO,
+    BRANCO_ESCURO
+} cores_terminal_t;
 
-#ifdef _WIN32
+typedef enum tipo_token_markdown_e {
+    TEXTO,
+    CABECALHO,
+    ITALICO,
+    NEGRITO,
+    CODIGO,
+    BLOCO_CITACAO,
+    BLOCO_CODIGO,
+    LISTA
+} tipo_token_markdown_t;
 
-/* Windows-specific color values */
-static const int win_colors[] = {
-    0, /* RESET (Não usado pela API do Windows) */
-    0, /* PRETO_CLARO não existe na API do Windows, usamos PRETO_ESCURO */
-    FOREGROUND_RED | FOREGROUND_INTENSITY,                    /* LIGHT_RED */
-    FOREGROUND_GREEN | FOREGROUND_INTENSITY,                  /* LIGHT_GREEN */
-    FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY, /* LIGHT_YELLOW */
-    FOREGROUND_BLUE | FOREGROUND_INTENSITY,                   /* LIGHT_BLUE */
-    FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY, /* LIGHT_MAGENTA */
-    FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY, /* LIGHT_CYAN */
-    FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE |
-        FOREGROUND_INTENSITY,                           /* BRANCO_CLARO */
-    0,                                                  /* PRETO_ESCURO */
-    FOREGROUND_RED,                                     /* DARK_RED */
-    FOREGROUND_GREEN,                                   /* DARK_GREEN */
-    FOREGROUND_RED | FOREGROUND_GREEN,                  /* DARK_YELLOW */
-    FOREGROUND_BLUE,                                    /* DARK_BLUE */
-    FOREGROUND_RED | FOREGROUND_BLUE,                   /* DARK_MAGENTA */
-    FOREGROUND_GREEN | FOREGROUND_BLUE,                 /* DARK_CYAN */
-    FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE /* BRANCO_ESCURO */
-};
+typedef struct token_markdown_s {
+    tipo_token_markdown_t tipo;
+    char conteudo[1024];
+    int nivel_lista;
+    char language[1024];
+} token_markdown_t;
 
-#if _USAR_COR_NO_TERMINAL == 1
-/**
- * @name cli_definir_cores
- * @return void
- * @param cor_texto:cores_terminal_t
- * @param cor_fundo:cores_terminal_t
- *
- * Função para definir as cores do texto e do fundo do terminal utilizando
- *códigos ANSI. A função recebe as cores para o texto e o fundo, e utiliza os
- *códigos de escape ANSI para alterar as cores de exibição no terminal.
- **/
-void cli_definir_cores(cores_terminal_t cor_texto, cores_terminal_t cor_fundo) {
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    int color_attr = 0;
+/* Prototipo das funções */
+void cli_definir_cores(cores_terminal_t cor_texto, cores_terminal_t cor_fundo);
+void cli_redefinir_cores(void);
+unsigned long contar_caracteres_utf8(const char *texto);
+char *obter_codigo_ansi(cores_terminal_t cor, int tipo);
+void processar_string_cli(char *str);
+char *duplicar_string(const char *origem);
+char **dividir_linhas(char **entrada, int quantidade_entrada,
+                      int *quantidade_saida);
+char **dividir_string_em_array(char *entrada, int *quantidade);
+int inicio_sequencia_escape(const char *str, int i);
+int comprimento_sequencia_escape(const char *str, int inicio);
+void dividir_linha(const char *linha, char ***resultado,
+                   int *contador_resultado);
+char **dividir_linhas(char **entrada, int quantidade_entrada,
+                      int *quantidade_saida);
+char **copiar_strings_estaticas_para_dinamicas(char *strings_estaticas[],
+                                               int quantidade);
+void liberar_strings_dinamicas(char **strings, int quantidade);
+char *substituir_str(char *str, char *velho_sub, char *novo_sub);
+void renderizar_token_debug(token_markdown_t token);
+void renderizar_tokens_debug(token_markdown_t tokens[], int quantidade_tokens);
+char *printf_para_string(const char *formato, ...);
+char **renderizar_tokens_para_strings(token_markdown_t tokens[],
+                                      int quantidade_tokens,
+                                      int *numero_linhas);
+int iniciar_com_operador(char c);
+const char *encontrar_operador(const char *ponteiro);
+int encontrar_palavra_chave(const char *palavra);
+void colorizar_codigo_em_c(const char *codigo);
+char **colorizar_codigo_em_c_array_strings(char *codigo,
+                                           unsigned long *num_linhas);
+void tokenizar(char *linha, token_markdown_t tokens[], int *quantidade_tokens,
+               int *espacos_lista);
+void renderizar_token(token_markdown_t token);
+void renderizar_tokens(token_markdown_t tokens[], int quantidade_tokens);
 
-    /* Map cor_texto */
-    if (cor_texto >= PRETO_CLARO && cor_texto <= BRANCO_ESCURO) {
-        color_attr |= win_colors[cor_texto];
-    }
+/* Lista de palavras-chave do C89 */
+const char *palavras_chave[] = {
+    "auto",     "break",  "case",    "char",   "const",    "continue",
+    "default",  "do",     "double",  "else",   "enum",     "extern",
+    "float",    "for",    "goto",    "if",     "int",      "long",
+    "register", "return", "short",   "signed", "sizeof",   "static",
+    "struct",   "switch", "typedef", "union",  "unsigned", "void",
+    "volatile", "while",  NULL};
 
-    /* Map cor_fundo (shifted 4 bits for Windows attributes) */
-    if (cor_fundo >= PRETO_CLARO && cor_fundo <= BRANCO_ESCURO) {
-        color_attr |= (win_colors[cor_fundo] << 4);
-    }
+const char *operadores[] = {
+    "+",  "-",  "*",  "/",  "%", "=", "==", "!=", "<", ">",
+    "<=", ">=", "&&", "||", "!", "&", "|",  "^",  "~", "<<",
+    ">>", "++", "--", "->", ".", "?", ":",  NULL};
 
-    SetConsoleTextAttribute(hConsole, color_attr);
-}
-
-/**
- * @name cli_redefinir_cores
- * @return void
- *
- * Função para redefinir as cores do terminal para o padrão
- **/
-void cli_redefinir_cores() {
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN |
-                                          FOREGROUND_BLUE);
-}
-#else
-/**
- * @name cli_definir_cores
- * @return void
- * @param cor_texto:cores_terminal_t
- * @param cor_fundo:cores_terminal_t
- *
- * Função para definir as cores do texto e do fundo do terminal utilizando
- *códigos ANSI. A função recebe as cores para o texto e o fundo, e utiliza os
- *códigos de escape ANSI para alterar as cores de exibição no terminal.
- **/
-void cli_definir_cores(cores_terminal_t cor_texto, cores_terminal_t cor_fundo) {
-    (void)cor_texto;
-    (void)cor_fundo;
-    /* No-op when colors are disabled */
-}
-
-/**
- * @name cli_redefinir_cores
- * @return void
- *
- * Função para redefinir as cores do terminal para o padrão
- **/
-void cli_redefinir_cores() {
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN |
-                                          FOREGROUND_BLUE);
-}
-#endif
-
-#else
-
-#if _USAR_COR_NO_TERMINAL == 1
 /**
  * @name cli_definir_cores
  * @return void
@@ -141,57 +124,7 @@ void cli_definir_cores(cores_terminal_t cor_texto, cores_terminal_t cor_fundo) {
     }
 }
 
-/**
- * @name cli_redefinir_cores
- * @return void
- *
- * Função para redefinir as cores do terminal para o padrão
- **/
 void cli_redefinir_cores(void) { printf("\033[0m"); }
-#else
-
-/**
- * @name cli_definir_cores
- * @return void
- * @param cor_texto:cores_terminal_t
- * @param cor_fundo:cores_terminal_t
- *
- * Função para definir as cores do texto e do fundo do terminal utilizando
- *códigos ANSI. A função recebe as cores para o texto e o fundo, e utiliza os
- *códigos de escape ANSI para alterar as cores de exibição no terminal.
- **/
-void cli_definir_cores(cores_terminal_t cor_texto, cores_terminal_t cor_fundo) {
-    (void)cor_texto;
-    (void)cor_fundo;
-    /* No-op when colors are disabled */
-}
-
-/**
- * @name cli_redefinir_cores
- * @return void
- *
- * Função para redefinir as cores do terminal para o padrão
- **/
-void cli_redefinir_cores(void) { printf("\033[0m"); }
-#endif
-#endif
-
-void exibir_linha_topo_interface(void) {
-    printf("/--------------------------------------------------------------"
-           "----------------\\\n");
-}
-
-void exibir_linha_inferior_interface(void) {
-    printf("\\-------------------------------------------------------------"
-           "-----------------/\n\n");
-}
-
-void exibir_divisor_interface(void) {
-    printf("|--------------------------------------------------------------"
-           "----------------|\n");
-}
-
-void exibir_espacador_interface(void) { printf("|%78s|\n", ""); }
 
 /**
  * @name contar_caracteres_utf8
@@ -233,234 +166,6 @@ unsigned long contar_caracteres_utf8(const char *texto) {
 
     return quantidade;
 }
-
-/**
- * @name printf_para_string
- * @return char* (um ponteiro para a string formatada, ou NULL em caso de erro)
- * @param formato: const char* (a string de formato que define como os
- *argumentos devem ser formatados)
- * @param ...: (argumentos variáveis que serão formatados de acordo com o
- *formato fornecido)
- *
- * A função utiliza um formato fornecido e argumentos variáveis para criar uma
- *string formatada e retornar o resultado em um buffer alocado dinamicamente.
- **/
-char *printf_para_string(const char *formato, ...) {
-    /* Declarações */
-    va_list args;
-    int tamanho;
-    char *buffer;
-    char buffer_temporal[1024]; /* Buffer temporário para estimar o tamanho da
-                                   string */
-
-    /* Inicializa a va_list para os argumentos variáveis */
-    va_start(args, formato);
-
-    /* Primeira passagem: Formatar a string no buffer temporário para estimar o
-     * tamanho */
-    tamanho = vsprintf(buffer_temporal, formato, args);
-
-    /* Se o tamanho for negativo, ocorreu um erro na formatação */
-    if (tamanho < 0) {
-        va_end(args);
-        return NULL; /* Retorna NULL em caso de erro */
-    }
-
-    /* Aloca memória para o buffer final (tamanho + 1 para o terminador nulo) */
-    buffer = (char *)malloc(tamanho + 1);
-    if (buffer == NULL) {
-        /* Em caso de falha na alocação de memória, libera os recursos e retorna
-        NULL */
-        free(buffer);
-        va_end(args);
-        return NULL;
-    }
-
-    /* Reinicializa a va_list antes da segunda passagem */
-    va_start(args, formato);
-
-    /* Segunda passagem: Formatar a string no buffer alocado dinamicamente */
-    vsprintf(buffer, formato, args);
-
-    /* Limpeza da va_list */
-    va_end(args);
-
-    return buffer; /* Retorna o ponteiro para a string formatada */
-}
-
-/**
- * @name printf_para_string_va
- * @return char* (um ponteiro para a string formatada, ou NULL em caso de erro)
- * @param formato: const char* (a string de formato que define como os
- *argumentos devem ser formatados)
- * @param args:va_list (argumentos variáveis que serão formatados de acordo com o
- *formato fornecido)
- *
- * A função utiliza um formato fornecido e argumentos variáveis para criar uma
- *string formatada e retornar o resultado em um buffer alocado dinamicamente.
- **/
-char *printf_para_string_va(const char *formato, va_list args) {
-    /* Declarações */
-    int tamanho;
-    char *buffer;
-    char buffer_temporal[1024]; /* Buffer temporário para estimar o tamanho da
-                                   string */
-
-    /* Primeira passagem: Formatar a string no buffer temporário para estimar o
-     * tamanho */
-    tamanho = vsprintf(buffer_temporal, formato, args);
-
-    /* Se o tamanho for negativo, ocorreu um erro na formatação */
-    if (tamanho < 0) {
-        va_end(args);
-        return NULL; /* Retorna NULL em caso de erro */
-    }
-
-    /* Aloca memória para o buffer final (tamanho + 1 para o terminador nulo) */
-    buffer = (char *)malloc(tamanho + 1);
-    if (buffer == NULL) {
-        /* Em caso de falha na alocação de memória, libera os recursos e retorna
-        NULL */
-        free(buffer);
-        va_end(args);
-        return NULL;
-    }
-
-    /* Segunda passagem: Formatar a string no buffer alocado dinamicamente */
-    vsprintf(buffer, formato, args);
-
-    return buffer; /* Retorna o ponteiro para a string formatada */
-}
-
-void exibir_linha_textual_interface(char *formato,
-                                    alinhamento_textual_t alinhamento,
-                                    cores_terminal_t cor_texto,
-                                    cores_terminal_t cor_fundo, ...) {
-    va_list lista_de_argumentos;
-    unsigned long largura_do_texto;
-    unsigned long espacamento_total;
-    unsigned long i;
-    char *texto;
-    va_start(lista_de_argumentos, cor_fundo);
-
-    espacamento_total = 0;
-    texto = printf_para_string_va(formato, lista_de_argumentos);
-    largura_do_texto = contar_caracteres_utf8(texto);
-
-    printf("| ");
-    if (largura_do_texto <= 74) {
-        espacamento_total = (74 - largura_do_texto) + 1;
-        switch (alinhamento) {
-        case ESQUERDA:
-            cli_definir_cores(cor_texto, cor_fundo);
-            printf("%s", texto);
-            for (i = 0; i <= espacamento_total; i++) {
-                putchar(' ');
-            }
-            cli_redefinir_cores();
-            break;
-        case CENTRO:
-            cli_definir_cores(cor_texto, cor_fundo);
-            if ((largura_do_texto % 2) == 0) {
-                for (i = 0; i <= (espacamento_total / 2); i++) {
-                    putchar(' ');
-                }
-                printf("%s", texto);
-                for (i = 0; i <= (espacamento_total / 2); i++) {
-                    putchar(' ');
-                }
-            } else {
-                for (i = 0; i <= ((espacamento_total / 2) - 1); i++) {
-                    putchar(' ');
-                }
-                printf("%s", texto);
-                for (i = 0; i <= (espacamento_total / 2); i++) {
-                    putchar(' ');
-                }
-            }
-            cli_redefinir_cores();
-            break;
-        case DIREITA:
-            cli_definir_cores(cor_texto, cor_fundo);
-            for (i = 0; i <= espacamento_total; i++) {
-                putchar(' ');
-            }
-            printf("%s", texto);
-            cli_redefinir_cores();
-            break;
-        }
-    } else if ((largura_do_texto > 74) && largura_do_texto < 76) {
-        cli_definir_cores(cor_texto, cor_fundo);
-        printf("%s ", texto);
-        cli_redefinir_cores();
-    } else {
-        cli_definir_cores(cor_texto, cor_fundo);
-        printf("%s", texto);
-        cli_redefinir_cores();
-    }
-    printf(" |\n");
-
-    free(texto);
-    cli_redefinir_cores();
-    va_end(lista_de_argumentos);
-}
-
-void exibir_opcao_interface(unsigned long numero, char *opcao) {
-    printf("[");
-    cli_definir_cores(BRANCO_CLARO, PADRAO);
-    printf("%lu", numero);
-    cli_redefinir_cores();
-    printf("] - %s\n", opcao);
-}
-
-void exibir_opcao_configurar_display(unsigned long numero, char *opcao,
-                                     char *descricao,
-                                     unsigned char condicional) {
-    printf("\t(%d) - %s [", numero, opcao);
-    if (condicional != 0) {
-        cli_definir_cores(VERDE_CLARO, PADRAO);
-        printf("SELECIONADO");
-        cli_redefinir_cores();
-    } else {
-        cli_definir_cores(AZUL_CLARO, PADRAO);
-        printf("DISPONIVEL");
-        cli_redefinir_cores();
-    }
-    printf("]\n");
-    printf("\t\t%s\n", descricao);
-}
-
-typedef enum tipo_token_markdown_e {
-    TEXTO,
-    CABECALHO,
-    ITALICO,
-    NEGRITO,
-    CODIGO,
-    BLOCO_CITACAO,
-    BLOCO_CODIGO,
-    LISTA
-} tipo_token_markdown_t;
-
-typedef struct token_markdown_s {
-    tipo_token_markdown_t tipo;
-    char conteudo[1024];
-    int nivel_lista;
-    char language[1024];
-} token_markdown_t;
-
-/* Lista de palavras-chave do C89 */
-const char *palavras_chave[] = {
-    "auto",     "break",  "case",    "char",   "const",    "continue",
-    "default",  "do",     "double",  "else",   "enum",     "extern",
-    "float",    "for",    "goto",    "if",     "int",      "long",
-    "register", "return", "short",   "signed", "sizeof",   "static",
-    "struct",   "switch", "typedef", "union",  "unsigned", "void",
-    "volatile", "while",  NULL};
-
-const char *operadores[] = {
-    "+",  "-",  "*",  "/",  "%", "=", "==", "!=", "<", ">",
-    "<=", ">=", "&&", "||", "!", "&", "|",  "^",  "~", "<<",
-    ">>", "++", "--", "->", ".", "?", ":",  NULL};
 
 /**
  * @name obter_codigo_ansi
@@ -640,7 +345,7 @@ char *duplicar_string(const char *origem) {
 
     /* Calcula o tamanho da nova string (quantidade de caracteres UTF-8 + 1 para
      * o nulo) */
-    tamanho = (contar_caracteres_utf8(origem) * 2) + 1;
+    tamanho = contar_caracteres_utf8(origem) + 1;
 
     /* Aloca memória suficiente para armazenar a nova string */
     nova_string = malloc(tamanho);
@@ -1144,6 +849,58 @@ void renderizar_tokens_debug(token_markdown_t tokens[], int quantidade_tokens) {
 }
 
 /**
+ * @name printf_para_string
+ * @return char* (um ponteiro para a string formatada, ou NULL em caso de erro)
+ * @param formato: const char* (a string de formato que define como os
+ *argumentos devem ser formatados)
+ * @param ...: (argumentos variáveis que serão formatados de acordo com o
+ *formato fornecido)
+ *
+ * A função utiliza um formato fornecido e argumentos variáveis para criar uma
+ *string formatada e retornar o resultado em um buffer alocado dinamicamente.
+ **/
+char *printf_para_string(const char *formato, ...) {
+    /* Declarações */
+    va_list args;
+    int tamanho;
+    char buffer_temporal[1024]; /* Buffer temporário para estimar o tamanho da
+                                   string */
+
+    /* Inicializa a va_list para os argumentos variáveis */
+    va_start(args, formato);
+
+    /* Primeira passagem: Formatar a string no buffer temporário para estimar o
+     * tamanho */
+    tamanho = vsprintf(buffer_temporal, formato, args);
+
+    /* Se o tamanho for negativo, ocorreu um erro na formatação */
+    if (tamanho < 0) {
+        va_end(args);
+        return NULL; /* Retorna NULL em caso de erro */
+    }
+
+    /* Aloca memória para o buffer final (tamanho + 1 para o terminador nulo) */
+    char *buffer = (char *)malloc(tamanho + 1);
+    if (buffer == NULL) {
+        /* Em caso de falha na alocação de memória, libera os recursos e retorna
+         * NULL */
+        va_end(args);
+        return NULL;
+    }
+
+    /* Reinicializa a va_list antes da segunda passagem */
+    va_start(args, formato);
+
+    /* Segunda passagem: Formatar a string no buffer alocado dinamicamente */
+    vsprintf(buffer, formato, args);
+
+    /* Limpeza da va_list */
+    va_end(args);
+
+    return buffer; /* Retorna o ponteiro para a string formatada */
+}
+
+/**
  * @name iniciar_com_operador
  * @return int
  * @param caractere:char
@@ -1572,7 +1329,7 @@ char **colorizar_codigo_em_c_array_strings(char *codigo,
         /* Lida com strings entre aspas duplas */
         if (*ponteiro == '"') {
             string_dq_inicio = printf_para_string(
-                "%s\"", obter_codigo_ansi(VERDE_CLARO, 0));
+                "%s\"", obter_codigo_ansi(VERMELHO_CLARO, 0));
             strcat(linha_atual, string_dq_inicio);
             free(string_dq_inicio);
             ponteiro++;
@@ -1703,7 +1460,6 @@ char **renderizar_tokens_para_strings(token_markdown_t tokens[],
     int i;
     char *linha_atual;
     char *token_atual;
-    char *token_atual_temporario;
     char **linhas = NULL;
     char **linhas_codigo = NULL;
     unsigned long num_linhas_codigo;
@@ -1721,7 +1477,6 @@ char **renderizar_tokens_para_strings(token_markdown_t tokens[],
     linha_atual = (char *)calloc(512, sizeof(char));
     if (linha_atual == NULL) {
         free(linhas);
-        free(linha_atual);
         return NULL;
     }
 
@@ -1755,48 +1510,21 @@ char **renderizar_tokens_para_strings(token_markdown_t tokens[],
                 tokens[i].conteudo, obter_codigo_ansi(PADRAO, 0));
             break;
         case LISTA:
-            // Adiciona o código ANSI com a cor e o conteúdo do token
             token_atual = printf_para_string(
-                            "%s%s%s", obter_codigo_ansi(BRANCO_ESCURO, 0),
-                            tokens[i].conteudo, obter_codigo_ansi(PADRAO, 0));
-
-            // Cria uma string de tabulação com base no nivel_lista
-            char *tabs = malloc(tokens[i].nivel_lista + 1); // +1 para o '\0' no final
-            if (tabs == NULL) {
-                free(linhas);
-                free(linha_atual);
-                return NULL;
-            }
-
-            // Preenche a string com '\t' de acordo com o nível da lista
+                "%s%s%s", obter_codigo_ansi(BRANCO_ESCURO, 0),
+                tokens[i].conteudo, obter_codigo_ansi(PADRAO, 0));
             for (int j = 0; j < tokens[i].nivel_lista; j++) {
-                tabs[j] = '\t';
+                token_atual = realloc(token_atual,
+                                      contar_caracteres_utf8(token_atual) + 2);
+                if (token_atual == NULL) {
+                    free(linhas);
+                    free(linha_atual);
+                    return NULL;
+                }
+                memmove(token_atual + 1, token_atual,
+                        contar_caracteres_utf8(token_atual) + 1);
+                token_atual[0] = '\t';
             }
-            tabs[tokens[i].nivel_lista] = '\0'; // Garantir que a string termine com '\0'
-
-            // Realoca o token_atual para adicionar espaço suficiente no início para os tabs
-            unsigned long novo_tamanho = contar_caracteres_utf8(token_atual) + contar_caracteres_utf8(tabs) + 1;
-            token_atual_temporario = realloc(token_atual, novo_tamanho);
-            if (token_atual == NULL) {
-                free(linhas);
-                free(linha_atual);
-                free(token_atual);
-                free(token_atual_temporario);
-                free(tabs); // Libera a memória de tabs antes de retornar
-                return NULL;
-            }
-
-            token_atual = token_atual_temporario;
-
-            // Move o conteúdo de token_atual para a posição correta, fazendo espaço para os tabs
-            memmove(token_atual + contar_caracteres_utf8(tabs), token_atual,
-                    contar_caracteres_utf8(token_atual) + 1); // +1 para o '\0'
-
-            // Copia a string de tabs para o início de token_atual
-            memcpy(token_atual, tabs, contar_caracteres_utf8(tabs));
-
-            // Libera a memória usada pela string de tabs, pois não é mais necessária
-            free(tabs);
             break;
         case BLOCO_CODIGO:
             if (strcmp(tokens[i].language, "c") == 0) {
@@ -1805,20 +1533,18 @@ char **renderizar_tokens_para_strings(token_markdown_t tokens[],
                 if (linhas_codigo == NULL) {
                     free(linhas);
                     free(linha_atual);
-                    liberar_strings_dinamicas(linhas_codigo, num_linhas_codigo);
                     return NULL;
                 }
                 for (unsigned long j = 0; j < num_linhas_codigo; j++) {
                     linhas[*numero_linhas] = duplicar_string(linhas_codigo[j]);
                     if (linhas[*numero_linhas] == NULL) {
-                        liberar_strings_dinamicas(linhas_codigo,
-                                                  num_linhas_codigo);
                         liberar_strings_dinamicas(linhas, *numero_linhas);
+                        free(linhas_codigo);
                         return NULL;
                     }
                     (*numero_linhas)++;
                 }
-                liberar_strings_dinamicas(linhas_codigo, num_linhas_codigo);
+                free(linhas_codigo);
                 continue;
             } else {
                 token_atual = printf_para_string(
@@ -1834,7 +1560,6 @@ char **renderizar_tokens_para_strings(token_markdown_t tokens[],
         }
 
         if (token_atual == NULL || linha_atual == NULL) {
-            free(token_atual);
             liberar_strings_dinamicas(linhas, *numero_linhas);
             return NULL;
         }
@@ -1848,12 +1573,9 @@ char **renderizar_tokens_para_strings(token_markdown_t tokens[],
             (*numero_linhas)++;
             memset(linha_atual, '\0',
                    512); // Limpa a linha atual para a próxima iteração
-            
         }
     }
 
-    free(token_atual_temporario); // Libera o buffer do token atual
-    free(token_atual); // Libera o buffer do token atual
     free(linha_atual); // Libera o buffer da linha atual
     return linhas;
 }
@@ -2192,6 +1914,7 @@ void paginador(char *texto) {
     linha_atual = 0;
     sair = 1;
 
+    
     int quantidade_tokens = 0;
     int espacos_lista = 0;
     texto_processado = dividir_string_em_array(texto, &initial_line_count);
@@ -2201,15 +1924,13 @@ void paginador(char *texto) {
                   &espacos_lista);
     }
 
-    liberar_strings_dinamicas(texto_processado, initial_line_count);
-
     int numero_linhas;
     char **linhas = renderizar_tokens_para_strings(tokens, quantidade_tokens,
                                                    &numero_linhas);
 
-    char **output = dividir_linhas(linhas, numero_linhas, &contagem_de_linhas);
 
-    liberar_strings_dinamicas(linhas, numero_linhas);
+
+    char **output = dividir_linhas(linhas, numero_linhas, &contagem_de_linhas);
 
     while (sair == 1) {
         limpar_tela();
@@ -2247,4 +1968,48 @@ void paginador(char *texto) {
     }
 
     liberar_strings_dinamicas(output, contagem_de_linhas);
+    liberar_strings_dinamicas(linhas, numero_linhas);
+    liberar_strings_dinamicas(texto_processado, initial_line_count);
+}
+
+int main(void) {
+    paginador("# cabeçalho\n"
+         "**negrito**\n"
+         "*italico*\n"
+         "`inline code` *italico* **negrito**\n"
+         "**negrito** `inline code` *italico*\n"
+         "*italico* **negrito** `inline code`\n"
+         "text without a newline "
+         "*This is a text with a really big line that spans across more than "
+         "80 characteres=that=really=should=never=be split apart*\n"
+         "**This is a text with a really big line that spans across more than "
+         "80 characteres=that=really=should=never=be split apart**\n"
+         "`This is a text with a really big line that spans across more than "
+         "80 characteres=that=really=should=never=be split apart`\n"
+         "This is a text with á really line that spans across more than 80 "
+         "characters and some text\n"
+         "- a\n"
+         "- b\n"
+         "  - c\n"
+         "  - d\n"
+         "  - e\n"
+         "    - e\n"
+         "  - g\n"
+         "> quote\n"
+         "> quote\n"
+         "> quote\n"
+         "> quote\n"
+         "```c\n"
+         "#include <stdio.h>\n"
+         "\n"
+         "/* comentario */\n"
+         "int main(void) {\n"
+         "\tprintf(\"Hello World\\n\");\n"
+         "\n"
+         "\treturn 0;\n"
+         "}\n"
+         "```\n"
+         "\n");
+
+    return 0;
 }

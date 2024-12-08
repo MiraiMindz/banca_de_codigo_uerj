@@ -17,8 +17,9 @@
         - seta para direita (próxima pagina/seção)
         - também permitir que o usuário digite q para sair ou um número para ir para determinada seção.
     - [ ] refatorar a função de exibição de linhas do menu
-    - [ ] fazer com que o paginador ignore cores na contagem de bytes das strings
+    - [x] fazer com que o paginador ignore cores na contagem de bytes das strings
     - [ ] fazer com que o paginador considere caracteres de multiplos bytes (UTF-8)
+    - [x] fazer o paginador processar markdown
 
 - Programa
     - [ ] localizar os códigos e escrever comentários mais descritivos (retroativa)

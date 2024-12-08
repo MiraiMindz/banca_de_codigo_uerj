@@ -1,9 +1,7 @@
 /* -*- coding: utf-8 -*- */
 /* Encoding: UTF-8 */
 /* META-DADOS DO ARQUIVO DE CÓDIGO, NÃO MODIFICAR POR FAVOR */
-#include "config/config.h"
 #include <ctype.h>
-#include <internal/cli.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,6 +17,33 @@
 #endif
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define _USAR_COR_NO_TERMINAL 1
+
+typedef enum cores_terminal_e {
+    PADRAO,
+    PRETO_CLARO,
+    VERMELHO_CLARO,
+    VERDE_CLARO,
+    AMARELO_CLARO,
+    AZUL_CLARO,
+    MAGENTA_CLARO,
+    CIANO_CLARO,
+    BRANCO_CLARO,
+    PRETO_ESCURO,
+    VERMELHO_ESCURO,
+    VERDE_ESCURO,
+    AMARELO_ESCURO,
+    AZUL_ESCURO,
+    MAGENTA_ESCURO,
+    CIANO_ESCURO,
+    BRANCO_ESCURO
+} cores_terminal_t;
+
+typedef enum alinhamento_textual_e {
+    ESQUERDA,
+    CENTRO,
+    DIREITA
+} alinhamento_textual_t;
 
 #ifdef _WIN32
 
@@ -288,50 +313,6 @@ char *printf_para_string(const char *formato, ...) {
     return buffer; /* Retorna o ponteiro para a string formatada */
 }
 
-/**
- * @name printf_para_string_va
- * @return char* (um ponteiro para a string formatada, ou NULL em caso de erro)
- * @param formato: const char* (a string de formato que define como os
- *argumentos devem ser formatados)
- * @param args:va_list (argumentos variáveis que serão formatados de acordo com o
- *formato fornecido)
- *
- * A função utiliza um formato fornecido e argumentos variáveis para criar uma
- *string formatada e retornar o resultado em um buffer alocado dinamicamente.
- **/
-char *printf_para_string_va(const char *formato, va_list args) {
-    /* Declarações */
-    int tamanho;
-    char *buffer;
-    char buffer_temporal[1024]; /* Buffer temporário para estimar o tamanho da
-                                   string */
-
-    /* Primeira passagem: Formatar a string no buffer temporário para estimar o
-     * tamanho */
-    tamanho = vsprintf(buffer_temporal, formato, args);
-
-    /* Se o tamanho for negativo, ocorreu um erro na formatação */
-    if (tamanho < 0) {
-        va_end(args);
-        return NULL; /* Retorna NULL em caso de erro */
-    }
-
-    /* Aloca memória para o buffer final (tamanho + 1 para o terminador nulo) */
-    buffer = (char *)malloc(tamanho + 1);
-    if (buffer == NULL) {
-        /* Em caso de falha na alocação de memória, libera os recursos e retorna
-        NULL */
-        free(buffer);
-        va_end(args);
-        return NULL;
-    }
-
-    /* Segunda passagem: Formatar a string no buffer alocado dinamicamente */
-    vsprintf(buffer, formato, args);
-
-    return buffer; /* Retorna o ponteiro para a string formatada */
-}
-
 void exibir_linha_textual_interface(char *formato,
                                     alinhamento_textual_t alinhamento,
                                     cores_terminal_t cor_texto,
@@ -344,7 +325,7 @@ void exibir_linha_textual_interface(char *formato,
     va_start(lista_de_argumentos, cor_fundo);
 
     espacamento_total = 0;
-    texto = printf_para_string_va(formato, lista_de_argumentos);
+    texto = printf_para_string(formato, lista_de_argumentos);
     largura_do_texto = contar_caracteres_utf8(texto);
 
     printf("| ");
@@ -1831,6 +1812,8 @@ char **renderizar_tokens_para_strings(token_markdown_t tokens[],
                 "%s%s%s", obter_codigo_ansi(BRANCO_ESCURO, 0),
                 tokens[i].conteudo, obter_codigo_ansi(PADRAO, 0));
             break;
+        default:
+            free(token_atual);
         }
 
         if (token_atual == NULL || linha_atual == NULL) {
@@ -2247,4 +2230,46 @@ void paginador(char *texto) {
     }
 
     liberar_strings_dinamicas(output, contagem_de_linhas);
+}
+
+int main(void) {
+    paginador("# cabeçalho\n"
+         "**negrito**\n"
+         "*italico*\n"
+         "`inline code` *italico* **negrito**\n"
+         "**negrito** `inline code` *italico*\n"
+         "*italico* **negrito** `inline code`\n"
+         "text without a newline "
+         "*This is a text with a really big line that spans across more than "
+         "80 characteres=that=really=should=never=be split apart*\n"
+         "**This is a text with a really big line that spans across more than "
+         "80 characteres=that=really=should=never=be split apart**\n"
+         "`This is a text with a really big line that spans across more than "
+         "80 characteres=that=really=should=never=be split apart`\n"
+         "This is a text with á really line that spans across more than 80 "
+         "characters and some text\n"
+         "- a\n"
+         "- b\n"
+         "  - c\n"
+         "  - d\n"
+         "  - e\n"
+         "    - e\n"
+         "  - g\n"
+         "> quote\n"
+         "> quote\n"
+         "> quote\n"
+         "> quote\n"
+         "```c\n"
+         "#include <stdio.h>\n"
+         "\n"
+         "/* comentario */\n"
+         "int main(void) {\n"
+         "\tprintf(\"Hello World\\n\");\n"
+         "\n"
+         "\treturn 0;\n"
+         "}\n"
+         "```\n"
+         "\n");
+
+    return 0;
 }
