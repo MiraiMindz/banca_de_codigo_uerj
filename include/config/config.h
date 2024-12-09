@@ -72,7 +72,7 @@
 #endif
 
 /* Esse código é usado nas diretrizes de pré-processador para dinamicamente
-   adaptar o código da fila linear fixa para o tipo de dado selecionado (Em C 
+   adaptar o código da fila fixa linear para o tipo de dado selecionado (Em C 
    não conseguimos fazer comparação de textos em macros, somente números) a 
    baixo você encontra a tabela com os códigos para cada tipo:
         0 - signed char   4 - unsigned char   8  - char  12 - float
@@ -81,14 +81,14 @@
         3 - signed long   7 - unsigned long   11 - long
         
     o #ifndef é uma medida de segurança para impedir que 
-    MACRO_FILA_FIXA_CODIGO seja re-definido caso tenha sido definido 
+    MACRO_FILA_FIXA_LINEAR_CODIGO seja re-definido caso tenha sido definido 
     anteriormente */
-#ifndef MACRO_FILA_FIXA_CODIGO
-#define MACRO_FILA_FIXA_CODIGO 12
-#endif /* MACRO_FILA_FIXA_CODIGO */
+#ifndef MACRO_FILA_FIXA_LINEAR_CODIGO
+#define MACRO_FILA_FIXA_LINEAR_CODIGO 12
+#endif /* MACRO_FILA_FIXA_LINEAR_CODIGO */
 
 /* Esse código é usado nas diretrizes de pré-processador para dinamicamente
-   adaptar o código da pilha linear fixa para o tipo de dado selecionado (Em C 
+   adaptar o código da pilha fixa linear para o tipo de dado selecionado (Em C 
    não conseguimos fazer comparação de textos em macros, somente números) a 
    baixo você encontra a tabela com os códigos para cada tipo:
         0 - signed char   4 - unsigned char   8  - char  12 - float
@@ -97,10 +97,10 @@
         3 - signed long   7 - unsigned long   11 - long
         
     o #ifndef é uma medida de segurança para impedir que 
-    MACRO_PILHA_FIXA_CODIGO seja re-definido caso tenha sido definido 
+    MACRO_PILHA_FIXA_LINEAR_CODIGO seja re-definido caso tenha sido definido 
     anteriormente */
-#ifndef MACRO_PILHA_FIXA_CODIGO
-#define MACRO_PILHA_FIXA_CODIGO 12
-#endif /* MACRO_PILHA_FIXA_CODIGO */
+#ifndef MACRO_PILHA_FIXA_LINEAR_CODIGO
+#define MACRO_PILHA_FIXA_LINEAR_CODIGO 12
+#endif /* MACRO_PILHA_FIXA_LINEAR_CODIGO */
 
 #endif /* CONFIG_H */

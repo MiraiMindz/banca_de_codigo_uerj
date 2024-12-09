@@ -2,8 +2,8 @@
 /* Encoding: UTF-8 */
 /* META-DADOS DO ARQUIVO DE CÓDIGO, NÃO MODIFICAR POR FAVOR */
 
-#include <estruturas/fila_dinamica_linear_fixa/menu.h>
-#include <estruturas/pilha_dinamica_linear_fixa/menu.h>
+#include <estruturas/fila/fixa/linear/menu.h>
+#include <estruturas/pilha/fixa/linear/menu.h>
 #include <internal/cli.h>
 #include <internal/ementa_interativa/ementa_interativa.h>
 #include <internal/menus.h>
@@ -18,7 +18,16 @@
 #endif
 
 void main_menu(void) {
-    unsigned char escolha_global = 0;
+    unsigned char escolha_global;
+    unsigned char escolha_sub1;
+    unsigned char escolha_sub2;
+    unsigned char escolha_sub3;
+    escolha_global = 0;
+    escolha_sub1 = 0;
+    escolha_sub2 = 0;
+    escolha_sub3 = 0;
+
+
     limpar_tela();
     do {
         /* Sim um comentário no meio do código, olha... eu SEI que isso está
@@ -128,12 +137,90 @@ void main_menu(void) {
             break;
         case 2:
             limpar_tela();
-            fila_fixa_menu_interativo();
+            do {
+                limpar_tela();
+                printf("Selecione o tipo da sua fila:\n\n");
+                exibir_opcao_interface(1, "Fixa Linear");
+                exibir_opcao_interface(2, "Fixa Circular");
+                exibir_opcao_interface(3, "Variavel Linear");
+                exibir_opcao_interface(4, "Simples Encadeada");
+                exibir_opcao_interface(5, "Dupla Encadeada");
+                exibir_opcao_interface(6, "Deque Fixa Linear");
+                exibir_opcao_interface(7, "Deque Variavel Linear");
+                exibir_opcao_interface(8, "Deque Encadeada");
+                exibir_opcao_interface(0, "Sair");
+                printf("\n");
+                cli_definir_cores(PRETO_CLARO, PADRAO);
+                printf("Fixa sigifica que a estrutura tem tamanho fixo.\n");
+                printf("Variavel sigifica que a estrutura tem tamanho variavel.\n");
+                cli_redefinir_cores();
+                printf("\n");
+
+                printf("Insira sua Resposta: ");
+                scanf("%hhu", &escolha_sub1);
+
+                switch (escolha_sub1) {
+                    case 1:
+                        limpar_tela();
+                        fila_fixa_menu_interativo();
+                        limpar_tela();
+                        break;
+                    case 0:
+                        limpar_tela();
+                        cli_definir_cores(BRANCO_CLARO, PADRAO);
+                        printf("Saindo...\n");
+                        cli_redefinir_cores();
+                        break;
+                    default:
+                        limpar_tela();
+                        cli_definir_cores(VERMELHO_CLARO, PADRAO);
+                        printf("Opção Invalida, favor tentar novamente.\n\n");
+                        cli_redefinir_cores();
+                        break;
+                }
+            } while (escolha_sub1 != 0);
             limpar_tela();
             break;
         case 3:
             limpar_tela();
-            testar_pilha_fixa_menu_interativo();
+            do {
+                limpar_tela();
+                printf("Selecione o tipo da sua pilha:\n\n");
+                exibir_opcao_interface(1, "Fixa Linear");
+                exibir_opcao_interface(2, "Fixa Circular");
+                exibir_opcao_interface(3, "Variavel Linear");
+                exibir_opcao_interface(4, "Simples Encadeada");
+                exibir_opcao_interface(0, "Sair");
+                printf("\n");
+                cli_definir_cores(PRETO_CLARO, PADRAO);
+                printf("Fixa sigifica que a estrutura tem tamanho fixo.\n");
+                printf("Variavel sigifica que a estrutura tem tamanho variavel.\n");
+                cli_redefinir_cores();
+                printf("\n");
+
+                printf("Insira sua Resposta: ");
+                scanf("%hhu", &escolha_sub1);
+
+                switch (escolha_sub1) {
+                    case 1:
+                        limpar_tela();
+                        pilha_fixa_linear_menu_interativo();
+                        limpar_tela();
+                        break;
+                    case 0:
+                        limpar_tela();
+                        cli_definir_cores(BRANCO_CLARO, PADRAO);
+                        printf("Saindo...\n");
+                        cli_redefinir_cores();
+                        break;
+                    default:
+                        limpar_tela();
+                        cli_definir_cores(VERMELHO_CLARO, PADRAO);
+                        printf("Opção Invalida, favor tentar novamente.\n\n");
+                        cli_redefinir_cores();
+                        break;
+                }
+            } while (escolha_sub1 != 0);
             limpar_tela();
             break;
         case 9:
