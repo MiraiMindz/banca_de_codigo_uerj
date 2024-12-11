@@ -2331,7 +2331,7 @@ void paginador(char *texto) {
         printf("+--------------------------------------------------------------"
                "----------------+\n");
         printf("|   Use [d] para descer    |    Use [s] para subir    |    use "
-               "[q] prara sair  |\n");
+               "[q] para sair   |\n");
         printf("+--------------------------------------------------------------"
                "----------------+\n");
         printf("\n");

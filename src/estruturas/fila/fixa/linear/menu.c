@@ -419,10 +419,10 @@ void fila_fixa_menu_interativo(void) {
                 printf("Lista de opções:\n");
                 exibir_opcao_configurar_display(1, "Exibir conectores", "Exibe -> ao invés de virgulas na exibição não tabular da fila.", (opcoes_exibicao & (1 << 0)));
                 exibir_opcao_configurar_display(2, "Exibir endereço do inicio, atual e final", "Exibe os endereços dos elementos a cada ação", (opcoes_exibicao & (1 << 1)));
-                exibir_opcao_configurar_display(3, "Exibir como tabela", "Exibe a fila como tabela", (opcoes_exibicao & (1 << 3)));
-                exibir_opcao_configurar_display(4, "Exibir todos os endereços", "Exibe os endereços nas visões tabular e linear da fila", (opcoes_exibicao & (1 << 4)));
-                exibir_opcao_configurar_display(5, "Exibir posições", "Exibe os indices na visão tabular da fila", (opcoes_exibicao & (1 << 5)));
-                exibir_opcao_configurar_display(6, "Exibir fila completa", "Exibe todos os valores, mesmo que estejam em branco", (opcoes_exibicao & (1 << 6)));
+                exibir_opcao_configurar_display(3, "Exibir como tabela", "Exibe a fila como tabela", (opcoes_exibicao & (1 << 2)));
+                exibir_opcao_configurar_display(4, "Exibir todos os endereços", "Exibe os endereços nas visões tabular e linear da fila", (opcoes_exibicao & (1 << 3)));
+                exibir_opcao_configurar_display(5, "Exibir posições", "Exibe os indices na visão tabular da fila", (opcoes_exibicao & (1 << 4)));
+                exibir_opcao_configurar_display(6, "Exibir fila completa", "Exibe todos os valores, mesmo que estejam em branco", (opcoes_exibicao & (1 << 5)));
                 exibir_opcao_configurar_display(9, "Exibir a fila em todas as ações", "Exibe a fila em todas as ações, nota-se que se não definir a opção (6), caso a fila esteja em branco, nada será exibido ao criar a lista", exibir_ao_mudar);
                 printf("\t(0) - Voltar ao menu principal\n");
                 printf("\t\tFecha esse menu e retorna ao menu principal.\n");
