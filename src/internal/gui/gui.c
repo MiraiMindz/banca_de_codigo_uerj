@@ -2,7 +2,9 @@
 /* Encoding: UTF-8 */
 /* META-DADOS DO ARQUIVO DE CÓDIGO, NÃO MODIFICAR POR FAVOR */
 #include <config/config.h>
+#include <estruturas/fila/fixa/linear/estrutura.h>
 #include <internal/GUI/gui.h>
+
 #include <stdio.h>
 #define RAYGUI_IMPLEMENTATION
 #include <raylib.h>
@@ -457,9 +459,9 @@ static int calcular_largura_do_texto(char *texto) {
 }
 
 static void centralizar_texto(char *texto, int posicao_y) {
-    int espacamento;
-    espacamento = _INTERFACE_GRAFICA_LARGURA - calcular_largura_do_texto(texto);
-    GuiLabel((Rectangle){(int)((espacamento * 1.5) / 2),
+    GuiLabel((Rectangle){(int)((_INTERFACE_GRAFICA_LARGURA -
+                                calcular_largura_do_texto(texto)) /
+                               2),
                          posicao_y, calcular_largura_do_texto(texto)},
              texto);
 }
@@ -478,6 +480,448 @@ static void iniciar_janela(char *titulo) {
     GuiSetStyle(DEFAULT, TEXT_SIZE, _INTERFACE_GRAFICA_TAMANHO_FONTE);
 
     carregar_fonte();
+}
+
+static void draw_debug_lines(void) {
+    DrawLine(0, 0, _INTERFACE_GRAFICA_LARGURA, _INTERFACE_GRAFICA_ALTURA, RED);
+    DrawLine(_INTERFACE_GRAFICA_LARGURA, 0, 0, _INTERFACE_GRAFICA_ALTURA, RED);
+    DrawLine(_INTERFACE_GRAFICA_LARGURA / 2, _INTERFACE_GRAFICA_ALTURA,
+             _INTERFACE_GRAFICA_LARGURA / 2, 0, RED);
+    DrawLine(_INTERFACE_GRAFICA_LARGURA, _INTERFACE_GRAFICA_ALTURA / 2, 0,
+             _INTERFACE_GRAFICA_ALTURA / 2, RED);
+}
+
+static char *printf_para_string(const char *formato, ...) {
+    /* Declarações */
+    va_list args;
+    int tamanho;
+    char *buffer;
+    char buffer_temporal[1024]; /* Buffer temporário para estimar o tamanho da
+                                   string */
+
+    /* Inicializa a va_list para os argumentos variáveis */
+    va_start(args, formato);
+
+    /* Primeira passagem: Formatar a string no buffer temporário para estimar o
+     * tamanho */
+    tamanho = vsprintf(buffer_temporal, formato, args);
+
+    /* Se o tamanho for negativo, ocorreu um erro na formatação */
+    if (tamanho < 0) {
+        va_end(args);
+        return NULL; /* Retorna NULL em caso de erro */
+    }
+
+    /* Aloca memória para o buffer final (tamanho + 1 para o terminador nulo) */
+    buffer = (char *)malloc(tamanho + 1);
+    if (buffer == NULL) {
+        /* Em caso de falha na alocação de memória, libera os recursos e retorna
+        NULL */
+        free(buffer);
+        va_end(args);
+        return NULL;
+    }
+
+    /* Reinicializa a va_list antes da segunda passagem */
+    va_start(args, formato);
+
+    /* Segunda passagem: Formatar a string no buffer alocado dinamicamente */
+    vsprintf(buffer, formato, args);
+
+    /* Limpeza da va_list */
+    va_end(args);
+
+    return buffer; /* Retorna o ponteiro para a string formatada */
+}
+
+void ementa_interativa_gui(void) {
+    unsigned char sair_ementa_interativa;
+    sair_ementa_interativa = 0;
+
+    while (sair_ementa_interativa == 0) {
+        BeginDrawing();
+        ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
+
+        centralizar_texto("Ementa Interativa", 16);
+
+        if (GuiButton((Rectangle){(int)((_INTERFACE_GRAFICA_LARGURA - 192) / 2),
+                                  _INTERFACE_GRAFICA_ALTURA - (16 + 24), 192,
+                                  24},
+                      "SAIR")) {
+            sair_ementa_interativa = 1;
+            printf("Sair\n");
+        }
+
+        if (GuiIsLocked()) {
+            GuiUnlock();
+        }
+
+        EndDrawing();
+        if (WindowShouldClose()) {
+            sair_ementa_interativa = 1;
+        }
+    }
+
+    if (WindowShouldClose()) {
+        CloseWindow();
+    }
+}
+
+void fila_fixa_linear(void) {
+    unsigned char sair_fila_fixa_linear;
+    unsigned char exibir_opcoes_fila_fixa_linear;
+    int fila_fixa_linear_tamanho;
+    unsigned char editar_value_box;
+    fila_fixa_linear_t *fila;
+    unsigned long i;
+    char *fila_item_string1;
+    char *fila_item_string2;
+    char *fila_item_string3;
+
+    fila = NULL;
+
+    fila_fixa_linear_tamanho = 0;
+    sair_fila_fixa_linear = 0;
+    exibir_opcoes_fila_fixa_linear = 0;
+    editar_value_box = 0;
+
+    while (sair_fila_fixa_linear == 0) {
+        if (GuiIsLocked()) {
+            GuiUnlock();
+        }
+        BeginDrawing();
+        ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
+
+        centralizar_texto("Fila Fixa Linear", 16);
+
+        DrawLine(_INTERFACE_GRAFICA_LARGURA / 3, _INTERFACE_GRAFICA_ALTURA - 32,
+                 _INTERFACE_GRAFICA_LARGURA / 3, 64, GRAY);
+
+        /*
+            [1] - Criar fila
+            [2] - Adicionar elemento
+            [3] - Remover elemento
+            [4] - Reiniciar fila
+            [5] - Re-alocar elementos
+            [6] - Configurar exibição da fila
+            [7] - Exibir fila
+            [8] - Exibir Ajuda
+            [0] - Sair
+         */
+
+        switch (exibir_opcoes_fila_fixa_linear) {
+        case 1:
+            if (GuiValueBox(
+                    (Rectangle){
+                        (int)(((_INTERFACE_GRAFICA_LARGURA / 3) - 192) / 2),
+                        16 + 24 + 64, 192, 24},
+                    NULL, &fila_fixa_linear_tamanho, 0, 256,
+                    editar_value_box)) {
+                printf("tamanho: %d\n", fila_fixa_linear_tamanho);
+                GuiLock();
+                editar_value_box = !editar_value_box;
+            }
+
+            if (GuiButton(
+                    (Rectangle){
+                        (int)(((_INTERFACE_GRAFICA_LARGURA / 3) - 192) / 2),
+                        _INTERFACE_GRAFICA_ALTURA - (16 + 24), 192, 24},
+                    "Criar")) {
+                fila = criar_fila_fixa_linear_ret(
+                    (unsigned long)fila_fixa_linear_tamanho);
+                printf("Criando fila com tamanho %d\n",
+                       fila_fixa_linear_tamanho);
+                exibir_opcoes_fila_fixa_linear = 0;
+            }
+            break;
+        case 2:
+            break;
+        case 3:
+            break;
+        case 4:
+            break;
+        case 5:
+            break;
+        case 6:
+            break;
+        case 7:
+            break;
+        default:
+            if (GuiButton(
+                    (Rectangle){
+                        (int)(((_INTERFACE_GRAFICA_LARGURA / 3) - 192) / 2),
+                        16 + 24 + 64, 192, 24},
+                    "Criar fila")) {
+                printf("Criar fila\n");
+                exibir_opcoes_fila_fixa_linear = 1;
+            }
+
+            break;
+        }
+
+        if (fila != NULL) {
+            GuiLabel(
+                (Rectangle){((int)(_INTERFACE_GRAFICA_LARGURA / 3) + 16) + 4,
+                            24 + 24, 96, 24},
+                "Indice");
+
+            for (i = 0; i < fila->capacidade; i++) {
+                if (i == 0) {
+                    GuiLabel(
+                        (Rectangle){
+                            ((int)(_INTERFACE_GRAFICA_LARGURA / 3) + 16) + 4,
+                            64 + 24, 96, 24},
+                        "Inicio:");
+                }
+
+                if ((i + 1) == (fila->capacidade)) {
+                    GuiLabel(
+                        (Rectangle){
+                            ((int)(_INTERFACE_GRAFICA_LARGURA / 3) + 16) + 4,
+                            64 + ((i + 1) * 24), 96, 24},
+                        "Final:");
+                }
+
+                int x = (int)(_INTERFACE_GRAFICA_LARGURA / 3) + 128;
+                // int y = 64 + (24 * (i + 1)) + (16 * (i + 1));
+                int y = 64 + (24 * (i + 1));
+                // int w = (int)(((_INTERFACE_GRAFICA_LARGURA / 3) * 2) - 64);
+                int w = 64;
+                int h = 24;
+                fila_item_string1 = printf_para_string("%d", i + 1);
+                fila_item_string2 =
+                    printf_para_string("%d", fila->dados_ptr[i]);
+                fila_item_string3 =
+                    printf_para_string("%p", &fila->dados_ptr[i]);
+
+                DrawRectangle(x, y, w, h, GRAY);
+                DrawRectangle(x + 2, y + 2, w - 4, h - 4, WHITE);
+                GuiLabel((Rectangle){x + 4, y, w - 8, h}, fila_item_string1);
+
+                DrawRectangle(x + w + 16, y, w * 2, h, GRAY);
+                DrawRectangle(x + 2 + w + 16, y + 2, (w * 2) - 4, h - 4, WHITE);
+                GuiLabel((Rectangle){x + 4 + w + 16, y, (w * 2) - 8, h},
+                         fila_item_string2);
+
+                DrawRectangle(x + ((w + 16) + ((w * 2) + 16)), y, w * 4, h,
+                              GRAY);
+                DrawRectangle(x + ((w + 16) + ((w * 2) + 16)) + 2, y + 2,
+                              (w * 4) - 4, h - 4, WHITE);
+                GuiLabel((Rectangle){x + ((w + 16) + ((w * 2) + 16)) + 4, y,
+                                     (w * 4) - 8, h},
+                         fila_item_string3);
+
+                free(fila_item_string1);
+                free(fila_item_string2);
+                free(fila_item_string3);
+            }
+
+        } else {
+            escrever_texto(
+                "Fila não iniciada.",
+                (_INTERFACE_GRAFICA_LARGURA / 3) +
+                    ((((_INTERFACE_GRAFICA_LARGURA / 3) * 2) -
+                      calcular_largura_do_texto("Fila não iniciada.")) /
+                     2),
+                _INTERFACE_GRAFICA_ALTURA / 2);
+        }
+
+        if (GuiButton((Rectangle){(int)((_INTERFACE_GRAFICA_LARGURA - 192) / 2),
+                                  _INTERFACE_GRAFICA_ALTURA - (16 + 24), 192,
+                                  24},
+                      "SAIR")) {
+
+            destruir_fila_fixa_linear_ptr(fila);
+            fila = NULL;
+            sair_fila_fixa_linear = 1;
+            printf("Sair\n");
+        }
+
+        if (GuiIsLocked()) {
+            GuiUnlock();
+        }
+
+        EndDrawing();
+        if (WindowShouldClose()) {
+            sair_fila_fixa_linear = 1;
+        }
+    }
+
+    if (WindowShouldClose()) {
+        CloseWindow();
+    }
+}
+
+void filas_gui(void) {
+    unsigned char sair_filas;
+    int opcao_selecionada;
+    unsigned char selecionar_opcao;
+    selecionar_opcao = 0;
+    opcao_selecionada = 0;
+    sair_filas = 0;
+
+    while (sair_filas == 0) {
+        BeginDrawing();
+        ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
+
+        if (selecionar_opcao) {
+            GuiLock();
+        }
+
+        centralizar_texto("Filas", 16);
+
+        escrever_texto("Uma Fila é uma estrutura FIFO (First In First Out) ou "
+                       "PEPS (Primeiro a",
+                       96, 16 + (16 * 1) + (8 * 1));
+        escrever_texto("Entrar Primeiro a Sair). Uma fila como o nome sugere é "
+                       "o equivalente a",
+                       96, 16 + (16 * 2) + (8 * 2));
+        escrever_texto("uma fila no mundo real com inicio, fim e um tamanho, "
+                       "onde o primeiro a",
+                       96, 16 + (16 * 3) + (8 * 3));
+        escrever_texto("chegar é o primeiro a sair.", 96,
+                       16 + (16 * 4) + (8 * 4));
+        escrever_texto("Escolha o tipo de fila que deseja executar: ", 96,
+                       32 + (16 * 5) + (8 * 5));
+
+        if (GuiDropdownBox(
+                (Rectangle){(int)(((_INTERFACE_GRAFICA_LARGURA -
+                                    calcular_largura_do_texto(
+                                        "DEQUE VARIAVEL LINEAR")) +
+                                   16) /
+                                  2),
+                            256,
+                            calcular_largura_do_texto("DEQUE VARIAVEL LINEAR") +
+                                16,
+                            24},
+                "FIXA LINEAR;FIXA CIRCULAR;VARIAVEL LINEAR;SIMPLES "
+                "ENCADEADA;DUPLA ENCADEADA;DEQUE FIXA LINEAR;DEQUE VARIAVEL "
+                "LINEAR;DEQUE ENCADEADA;",
+                &opcao_selecionada, selecionar_opcao)) {
+            selecionar_opcao = !selecionar_opcao;
+            GuiLock();
+        }
+
+        if (GuiButton(
+                (Rectangle){(int)((_INTERFACE_GRAFICA_LARGURA - 192) / 2),
+                            _INTERFACE_GRAFICA_ALTURA - ((16 * 2) + (24 * 2)),
+                            192, 24},
+                "CONFIRMAR")) {
+            switch (opcao_selecionada) {
+            case 0: /* FIXA LINEAR */
+                fila_fixa_linear();
+                break;
+            case 1: /* FIXA CIRCULAR */
+                break;
+            case 2: /* VARIAVEL LINEAR */
+                break;
+            case 3: /* SIMPLES ENCADEADA */
+                break;
+            case 4: /* DUPLA ENCADEADA */
+                break;
+            case 5: /* DEQUE FIXA LINEAR */
+                break;
+            case 6: /* DEQUE VARIAVEL LINEAR */
+                break;
+            case 7: /* DEQUE ENCADEADA */
+                break;
+            }
+        }
+
+        if (GuiButton((Rectangle){(int)((_INTERFACE_GRAFICA_LARGURA - 192) / 2),
+                                  _INTERFACE_GRAFICA_ALTURA - (16 + 24), 192,
+                                  24},
+                      "SAIR")) {
+            sair_filas = 1;
+            printf("Sair\n");
+        }
+
+        if (GuiIsLocked()) {
+            GuiUnlock();
+        }
+
+        EndDrawing();
+        if (WindowShouldClose()) {
+            sair_filas = 1;
+        }
+    }
+
+    if (WindowShouldClose()) {
+        CloseWindow();
+    }
+}
+
+void pilhas_gui(void) {
+    unsigned char sair_pilhas;
+    int opcao_selecionada;
+    unsigned char selecionar_opcao;
+    selecionar_opcao = 0;
+    opcao_selecionada = 0;
+    sair_pilhas = 0;
+
+    while (sair_pilhas == 0) {
+        BeginDrawing();
+        ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
+
+        if (selecionar_opcao) {
+            GuiLock();
+        }
+
+        centralizar_texto("Pilhas", 16);
+
+        if (GuiDropdownBox(
+                (Rectangle){
+                    (int)(((_INTERFACE_GRAFICA_LARGURA -
+                            calcular_largura_do_texto("SIMPLES ENCADEADA")) +
+                           16) /
+                          2),
+                    256, calcular_largura_do_texto("SIMPLES ENCADEADA") + 16,
+                    24},
+                "FIXA LINEAR;FIXA CIRCULAR;VARIAVEL LINEAR;SIMPLES ENCADEADA;",
+                &opcao_selecionada, selecionar_opcao)) {
+            selecionar_opcao = !selecionar_opcao;
+            GuiLock();
+        }
+
+        if (GuiButton(
+                (Rectangle){(int)((_INTERFACE_GRAFICA_LARGURA - 192) / 2),
+                            _INTERFACE_GRAFICA_ALTURA - ((16 * 2) + (24 * 2)),
+                            192, 24},
+                "CONFIRMAR")) {
+            GuiLock();
+            switch (opcao_selecionada) {
+            case 0: /* FIXA LINEAR */
+                break;
+            case 1: /* FIXA CIRCULAR */
+                break;
+            case 2: /* VARIAVEL LINEAR */
+                break;
+            case 3: /* SIMPLES ENCADEADA */
+                break;
+            }
+        }
+
+        if (GuiButton((Rectangle){(int)((_INTERFACE_GRAFICA_LARGURA - 192) / 2),
+                                  _INTERFACE_GRAFICA_ALTURA - (16 + 24), 192,
+                                  24},
+                      "SAIR")) {
+            sair_pilhas = 1;
+            printf("Sair\n");
+        }
+
+        if (GuiIsLocked()) {
+            GuiUnlock();
+        }
+
+        EndDrawing();
+        if (WindowShouldClose()) {
+            sair_pilhas = 1;
+        }
+    }
+
+    if (WindowShouldClose()) {
+        CloseWindow();
+    }
 }
 
 void gui_menu(void) {
@@ -499,13 +943,22 @@ void gui_menu(void) {
             GuiLock();
         }
 
-        centralizar_texto(
-            "Banca de Codigo da Universidade do Estado do Rio de Janeiro", 16);
+        GuiLabel((Rectangle){(int)(((_INTERFACE_GRAFICA_LARGURA -
+                                     calcular_largura_do_texto(
+                                         "Banca de Codigo da Universidade do "
+                                         "Estado do Rio de Janeiro")) *
+                                    1.5) /
+                                   2),
+                             16,
+                             calcular_largura_do_texto(
+                                 "Banca de Codigo da Universidade do Estado do "
+                                 "Rio de Janeiro")},
+                 "Banca de Codigo da Universidade do Estado do Rio de Janeiro");
         escrever_texto(
-            "Este programa tem o objetivo auxiliar na compreensão de "
+            "Este programa tem o objetivo auxiliar na compreensao de "
             "estruturas de dados",
             64, 32);
-        escrever_texto("usando a linguagem C (padrão ANSI X3.159-1989) de "
+        escrever_texto("usando a linguagem C (padrao ANSI X3.159-1989) de "
                        "programação, quaisquer",
                        64, 48 + 8);
         escrever_texto(
@@ -514,21 +967,17 @@ void gui_menu(void) {
             64, 64 + 16);
         escrever_texto("final, desta tela.", 64, 80 + 24);
 
-        DrawLine(0, 0, _INTERFACE_GRAFICA_LARGURA, _INTERFACE_GRAFICA_ALTURA, RED);
-        DrawLine(_INTERFACE_GRAFICA_LARGURA, 0, 0, _INTERFACE_GRAFICA_ALTURA, RED);
-        DrawLine(_INTERFACE_GRAFICA_LARGURA / 2, _INTERFACE_GRAFICA_ALTURA, _INTERFACE_GRAFICA_LARGURA / 2, 0, RED);
-        DrawLine(_INTERFACE_GRAFICA_LARGURA, _INTERFACE_GRAFICA_ALTURA / 2, 0, _INTERFACE_GRAFICA_ALTURA / 2, RED);
-
         if (GuiDropdownBox(
                 (Rectangle){
-                    (int)(((_INTERFACE_GRAFICA_LARGURA - calcular_largura_do_texto("PILHA LINEAR DE TAMANHO FIXO")) + 16) / 2),
-                    256,
-                    calcular_largura_do_texto("PILHA LINEAR DE TAMANHO FIXO") + 16,
+                    (int)(((_INTERFACE_GRAFICA_LARGURA -
+                            calcular_largura_do_texto("EMENTA INTERATIVA")) +
+                           16) /
+                          2),
+                    256, calcular_largura_do_texto("EMENTA INTERATIVA") + 16,
                     24},
-                "EMENTA INTERATIVA;FILA LINEAR DE TAMANHO FIXO;PILHA LINEAR "
-                "DE TAMANHO FIXO",
+                "EMENTA INTERATIVA;FILAS;PILHAS;LISTAS;TABELAS;GRAFOS "
+                "(ARVORES)",
                 &opcao_selecionada, selecionar_opcao)) {
-            printf("INTERAGINDO COM DROPDOWN\n");
             selecionar_opcao = !selecionar_opcao;
             GuiLock();
         }
@@ -541,18 +990,21 @@ void gui_menu(void) {
             GuiLock();
             switch (opcao_selecionada) {
             case 0: /* EMENTA INTERATIVA */
+                ementa_interativa_gui();
                 break;
-            case 1: /* FILA LINEAR DE TAMANHO FIXO */
+            case 1: /* FILAS */
+                filas_gui();
                 break;
-            case 2: /* PILHA LINEAR DE TAMANHO FIXO */
+            case 2: /* PILHAS */
+                pilhas_gui();
+                break;
+            case 3: /* LISTAS */
+                break;
+            case 4: /* TABELAS */
+                break;
+            case 5: /* GRAFOS (ARVORES) */
                 break;
             }
-            printf("Selecionado: [%d]\n", opcao_selecionada);
-            printf("Largura: %d\n", calcular_largura_do_texto("Banca de Codigo da Universidade do Estado do Rio de Janeiro"));
-            printf("spacamento Total: %d\n", 
-            _INTERFACE_GRAFICA_LARGURA - calcular_largura_do_texto("Banca de Codigo da Universidade do Estado do Rio de Janeiro"));
-            printf("Espacamento: %d\n", (_INTERFACE_GRAFICA_LARGURA - calcular_largura_do_texto("Banca de Codigo da Universidade do Estado do Rio de Janeiro")) / 2);
-            printf("tamanho texto bruto: %d\n", contar_caracteres_utf8("Banca de Codigo da Universidade do Estado do Rio de Janeiro"));
         }
 
         if (GuiButton(

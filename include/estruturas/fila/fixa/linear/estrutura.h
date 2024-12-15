@@ -10,30 +10,30 @@
  * Uma Fila fixa é um elemento FIFO (First In First Out) ou PEPS (Primeiro a
  * Entrar Primeiro a Sair), que não altera seu tamanho de forma dinamica podendo
  * somente armazernar um numero fixo de items.
- * 
+ *
  * Uma fila como o nome sugere é o equivalente a uma fila no mundo real com
  * inicio, fim e um tamanho, onde o primeiro a chegar é o primeiro a sair.
- * 
+ *
  * ela é dinamica no sentido de sua alocação de memória ser feita na STACK ao
  * invés da HEAP, sendo "dinamicamente alocada", porém ela tem TAMANHO FIXO
  * ou seja, ela não aumenta para suportar mais itens que o previamente estabele-
  * cido.
-*******************************************************************************/
+ *******************************************************************************/
 
 #ifndef ESTRUTURAS_FILA_FIXA_LINEAR_ESTRUTURA
 #define ESTRUTURAS_FILA_FIXA_LINEAR_ESTRUTURA
 
 #include <estruturas/fila/fixa/linear/macros.h>
 
-/* Uma struct que representa uma fila linear de alocação dinamica e tamanho fixo
-   a ordem dos campos tem ligeira importancia, pois permite com que otimizemos 
-   os espaços em memoria sem usar padding, o que agiliza o acesso e a 
-   performance da struct. Além de otimizar o acesso aos campos, pois mantemos os
-   campos de maior acesso (inicio e fim) no inicio da struct, enquanto mantemos 
-   os campos menos acessados no final o layout mais comum é ordenação por 
-   tamanho, onde os menores tipos estão no topo e os maiores no final, como o 
-   tipo dos dados é um ponteiro geralmente definimos no final pelo fato do 
-   tamanho do ponteiro poder variar. */
+/* Uma struct que representa uma fila linear de alocação dinamica e tamanho
+   fixo a ordem dos campos tem ligeira importancia, pois permite com que
+   otimizemos os espaços em memoria sem usar padding, o que agiliza o acesso
+   e a performance da struct. Além de otimizar o acesso aos campos, pois
+   mantemos os campos de maior acesso (inicio e fim) no inicio da struct,
+   enquanto mantemos os campos menos acessados no final o layout mais comum
+   é ordenação por tamanho, onde os menores tipos estão no topo e os maiores
+   no final, como o tipo dos dados é um ponteiro geralmente definimos no
+   final pelo fato do tamanho do ponteiro poder variar. */
 typedef struct fila_fixa_linear_s {
     /* representa o indice do ultimo elemento na fila, é usado para remover um
        elemento da fila e também para saber se a fila está cheia ou vazia. */
@@ -84,7 +84,7 @@ void destruir_fila_fixa_linear_ptr(fila_fixa_linear_t *fila_ptr);
 /* essa função insere um valor em uma dada fila fixa e retorna um código de
    erro onde 0 significa sucesso e qualquer número diferente erro. */
 int inserir_valor_fila_fixa_linear_ret(fila_fixa_linear_t *fila_ptr,
-                                    MACRO_FILA_FIXA_LINEAR_TIPO valor);
+                                       MACRO_FILA_FIXA_LINEAR_TIPO valor);
 
 /* essa função remove e retorna um valor em uma dada fila fixa */
 MACRO_FILA_FIXA_LINEAR_TIPO

@@ -7,7 +7,7 @@
  *
  * Esse arquivo em específico é o arquivo de configuração do codigo, ele define
  * os tipos de dado, e o comportamento do código em geral.
-*******************************************************************************/
+ *******************************************************************************/
 
 #ifndef CONFIG_H
 #define CONFIG_H
@@ -20,7 +20,7 @@
 #endif
 
 /* Esse macro permite o uso de cores no terminal, colorizando todas as saidas.
- * 1 significa SIM, 0 significa NÃO; qualquer valor diferente pode ter 
+ * 1 significa SIM, 0 significa NÃO; qualquer valor diferente pode ter
  * comportamento inesperado */
 #ifndef _USAR_COR_NO_TERMINAL
 #define _USAR_COR_NO_TERMINAL 1
@@ -39,11 +39,11 @@
  *      tput cols lines
  * */
 #ifndef _CLI_LESS_ALTURA_DA_PAGINA
-#define _CLI_LESS_ALTURA_DA_PAGINA 24  /* numero de linhas na tela */
+#define _CLI_LESS_ALTURA_DA_PAGINA 24 /* numero de linhas na tela */
 #endif
 
 #ifndef _CLI_LESS_LARGURA_DA_PAGINA
-#define _CLI_LESS_LARGURA_DA_PAGINA 80    /* largura da linha */
+#define _CLI_LESS_LARGURA_DA_PAGINA 80 /* largura da linha */
 #endif
 
 /* Esses dois macros controlam a largura e a altura da interface gráfica,
@@ -72,35 +72,35 @@
 #endif
 
 /* Esse código é usado nas diretrizes de pré-processador para dinamicamente
-   adaptar o código da fila fixa linear para o tipo de dado selecionado (Em C 
-   não conseguimos fazer comparação de textos em macros, somente números) a 
+   adaptar o código da fila fixa linear para o tipo de dado selecionado (Em C
+   não conseguimos fazer comparação de textos em macros, somente números) a
    baixo você encontra a tabela com os códigos para cada tipo:
         0 - signed char   4 - unsigned char   8  - char  12 - float
         1 - signed short  5 - unsigned short  9  - short 13 - double
         2 - signed int    6 - unsigned int    10 - int
         3 - signed long   7 - unsigned long   11 - long
-        
-    o #ifndef é uma medida de segurança para impedir que 
-    MACRO_FILA_FIXA_LINEAR_CODIGO seja re-definido caso tenha sido definido 
+
+    o #ifndef é uma medida de segurança para impedir que
+    MACRO_FILA_FIXA_LINEAR_CODIGO seja re-definido caso tenha sido definido
     anteriormente */
 #ifndef MACRO_FILA_FIXA_LINEAR_CODIGO
-#define MACRO_FILA_FIXA_LINEAR_CODIGO 12
+#define MACRO_FILA_FIXA_LINEAR_CODIGO 10
 #endif /* MACRO_FILA_FIXA_LINEAR_CODIGO */
 
 /* Esse código é usado nas diretrizes de pré-processador para dinamicamente
-   adaptar o código da pilha fixa linear para o tipo de dado selecionado (Em C 
-   não conseguimos fazer comparação de textos em macros, somente números) a 
+   adaptar o código da pilha fixa linear para o tipo de dado selecionado (Em C
+   não conseguimos fazer comparação de textos em macros, somente números) a
    baixo você encontra a tabela com os códigos para cada tipo:
         0 - signed char   4 - unsigned char   8  - char  12 - float
         1 - signed short  5 - unsigned short  9  - short 13 - double
         2 - signed int    6 - unsigned int    10 - int
         3 - signed long   7 - unsigned long   11 - long
-        
-    o #ifndef é uma medida de segurança para impedir que 
-    MACRO_PILHA_FIXA_LINEAR_CODIGO seja re-definido caso tenha sido definido 
+
+    o #ifndef é uma medida de segurança para impedir que
+    MACRO_PILHA_FIXA_LINEAR_CODIGO seja re-definido caso tenha sido definido
     anteriormente */
 #ifndef MACRO_PILHA_FIXA_LINEAR_CODIGO
-#define MACRO_PILHA_FIXA_LINEAR_CODIGO 12
+#define MACRO_PILHA_FIXA_LINEAR_CODIGO 10
 #endif /* MACRO_PILHA_FIXA_LINEAR_CODIGO */
 
 #endif /* CONFIG_H */
